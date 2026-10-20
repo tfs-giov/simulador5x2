@@ -199,37 +199,7 @@ h4 { margin: 0; font-size: 0.9375rem; color: var(--title); }
 .prem-line { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
 .prem-line p { margin: 0; }
 .fer-q { border-top: 0; margin-top: 16px; }
-.modo-calc { margin: 0 0 12px; }
-details.saiba-in { display: inline; }
-details.saiba-in > summary { display: inline; cursor: pointer; color: var(--primary); font-weight: 600; }
-details.saiba-in[open] { display: block; margin-top: 6px; }
-.mais-det { display: grid; gap: 16px; }
-.sub { font-size: 1.125rem; margin: 4px 0 10px; }
-.selos { list-style: none; padding: 0; margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
-.selos li { padding: 4px 12px; border-radius: 999px; background: var(--primary-soft); color: var(--title); font-size: 0.875rem; font-weight: 600; }
-details.saiba > summary { cursor: pointer; color: var(--primary); font-weight: 600; margin: 6px 0; }
-details.saiba[open] { margin-bottom: 8px; }
-.modelos h2 { margin: 0 0 4px; }
-.modelos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 12px; }
-.modelo { display: flex; align-items: center; gap: 8px; text-align: left; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; font-size: 0.9375rem; min-height: 48px; }
-.modelo span { font-size: 1.25rem; }
-.modelo[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-soft); box-shadow: inset 0 0 0 1px var(--primary); }
-@media (max-width: 420px) { .modelos-grid { grid-template-columns: 1fr 1fr; } }
-.aviso-modelo { margin: 4px 0 8px; padding: 8px 12px; border-left: 4px solid var(--focus); background: var(--warn-soft); border-radius: 4px; }
-input.conferir { border-color: var(--focus) !important; box-shadow: 0 0 0 2px rgba(240, 140, 46, .35); }
-.resumo-linha { display: none; }
-body.rapido .resumo-linha { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-content: space-between; }
-body.rapido .num-badge { display: none; }
-body.rapido:not(.func-aberto) [data-recolhe="func"] > :not(.step-head):not(.resumo-linha),
-body.rapido:not(.custo-aberto) [data-recolhe="custo"] > :not(.step-head):not(.resumo-linha),
-body.rapido:not(.custo-aberto) .advwrap, body.rapido:not(.custo-aberto) #adv { display: none !important; }
-.so-rapido { display: none; }
-body.rapido:not(.jor-mostra) .so-rapido { display: block; }
-body.rapido:not(.jor-mostra) .col-jor { display: none !important; }
-body.rapido:not(.jor-mostra) .shead, body.rapido:not(.jor-mostra) .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .95fr) minmax(0, .9fr) minmax(0, 1fr) 32px; }
-body.rapido.so-escala:not(.jor-mostra) .shead, body.rapido.so-escala:not(.jor-mostra) .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .9fr) minmax(0, 1fr) 32px; }
-@media (max-width: 900px) { body.rapido .srow { grid-template-columns: 1fr 1fr !important; } }
-#rapidoBtn[hidden] { display: none; }
+.modo-calc { margin: 0 0 16px; }
 body.so-escala .so-custo { display: none !important; }
 body.so-escala .shead, body.so-escala .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .75fr) minmax(0, 1fr) minmax(0, 1.35fr) 32px; }
 @media (max-width: 900px) { body.so-escala .srow { grid-template-columns: 1fr 1fr; } }
@@ -493,13 +463,9 @@ footer b { color: var(--ink); }
     <div class="modo" id="modoBar">
       <nav class="stepper" id="stepper" aria-label="Etapas"></nav>
       <button type="button" class="link" data-act="modo" id="modoBtn"></button>
-      <button type="button" class="link" data-act="rapido" id="rapidoBtn">Voltar ao modo rápido</button>
     </div>
     <section class="intro" data-step="1">
-      <h1>Fim da escala 6x1: quantas pessoas contratar e quanto custa</h1>
-      <p class="sub">Escolha seu tipo de negócio e veja o resultado na hora.</p>
-      <ul class="selos"><li>Grátis, sem cadastro</li><li>Nada sai do seu aparelho</li><li>Não oficial</li></ul>
-      <details class="saiba"><summary>O que muda com a Emenda Constitucional 141/2026</summary>
+      <h1>Da escala 6x1 para a 5x2: quantas pessoas contratar e quanto custa</h1>
       <p>Na escala 6x1, cada pessoa trabalha 6 dias e folga 1, com até 44 horas por semana. A Emenda Constitucional 141/2026 acaba com essa escala: o limite cai para 42 horas semanais em 15/12/2026, já com 2 folgas por semana, e para 40 horas em dezembro de 2027, sem redução de salário. Na prática, passa a valer a escala 5x2: 5 dias de trabalho e 2 de folga.</p>
       <p>O simulador monta turnos e folgas e mostra se é preciso contratar, quantas pessoas, até quando e quanto isso custa por mês. Se faltar gente, ele sugere alternativas, como mudar o horário, fechar um dia ou usar hora extra. Regras conferidas em <time datetime="2026-10-19">19/10/2026</time>; veja também as <a href="#perguntas">perguntas frequentes</a>.</p>
       <ul class="facts">
@@ -508,19 +474,12 @@ footer b { color: var(--ink); }
         <li><span><b>Seus dados não saem do seu celular ou computador.</b> Nada do que você digita é enviado para servidores externos. As informações ficam guardadas só neste navegador até você usar o botão "Apagar dados".</span></li>
         <li><span><b>Este site não é oficial</b> e não tem vínculo com o governo. Textos oficiais: <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" rel="noopener">Constituição, art. 7º</a>, com a redação da Emenda Constitucional 141/2026 (publicada em 16/10/2026; tramitou como <a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/174386" target="_blank" rel="noopener">PEC 221/2019</a>) e a <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm" target="_blank" rel="noopener">CLT</a> (arts. 58 e seguintes; o texto ainda não traz as mudanças da emenda).</span></li>
       </ul>
-      </details>
     </section>
 
-    <section class="card modelos" aria-labelledby="hMod" data-step="1">
-      <h2 id="hMod">Qual é o seu negócio?</h2>
-      <p class="hint">O modelo preenche horários, setores e salários típicos. Depois é só ajustar.</p>
-      <div id="modelosGrid" class="modelos-grid" role="group" aria-labelledby="hMod"></div>
-    </section>
-
-    <section class="card" aria-labelledby="h1s" data-step="1" data-recolhe="func">
+    <section class="card" aria-labelledby="h1s" data-step="1">
       <div class="step-head"><span class="num-badge">1</span><h2 id="h1s">Dias e horário de funcionamento</h2></div>
-      <div class="resumo-linha" id="resumoFunc"></div>
-      <p class="hint">Marque os dias em que a empresa abre e o horário, no formato 24h (ex.: 07:00 e 19:00).</p>
+      <p class="hint">Marque os dias em que a empresa abre e informe o horário de abertura e de fechamento no formato de 24 horas (ex.: 07:00 e 19:00). Se um setor trabalha em outro horário, como uma produção que começa antes de abrir, escolha "Diferente" no campo Horário desse setor, na etapa 2.</p>
+      <div id="modoCalc"></div>
       <div id="loja"></div>
       <div id="feriadoQ"></div>
       <details class="recebido"><summary>Recebeu um código de simulação? Abra aqui</summary>
@@ -530,30 +489,24 @@ footer b { color: var(--ink); }
 
     <section class="card" aria-labelledby="h2s" data-step="2">
       <div class="step-head"><span class="num-badge">2</span><h2 id="h2s">Setores</h2></div>
-      <div id="modoCalc"></div>
-      <p class="hint">Um setor por função. Conte só empregados, sem donos e sócios.</p>
-      <div id="avisoModelo"></div>
-      <details class="saiba"><summary>Como preencher</summary>
       <ul class="hint dicas-setor">
         <li><b>Setor:</b> um para cada função em que um funcionário não substitui o outro (ex.: caixa, reposição). Se todos fazem de tudo, use um só.</li>
         <li><b>Funcionários e salário:</b> a equipe de hoje, sem donos e sócios, e o salário bruto da carteira.</li>
-        <li><b>Ao mesmo tempo:</b> quantas precisam estar trabalhando juntas a qualquer momento (se o caixa precisa de 2 atendendo, informe 2, não o total da equipe).</li>
+        <li><b>Pessoas por vez:</b> quantas precisam estar trabalhando juntas a qualquer momento (se o caixa precisa de 2 atendendo, informe 2, não o total da equipe).</li>
         <li><b>Jornada:</b> na dúvida, deixe 8h por dia. 12x36 são plantões de 12h e exigem acordo ou convenção.</li>
       </ul>
-      </details>
-      <div class="shead" aria-hidden="true"><span>Setor</span><span>Funcionários</span><span class="so-custo">Salário médio</span><span>Ao mesmo tempo</span><span>Horário</span><span class="col-jor">Jornada</span><span></span></div>
+      <div class="shead" aria-hidden="true"><span>Setor</span><span>Funcionários</span><span class="so-custo">Salário médio</span><span>Pessoas por vez</span><span>Horário</span><span>Jornada</span><span></span></div>
       <div id="setores" class="setores"></div>
       <div><button type="button" data-act="addSetor">+ Adicionar setor</button></div>
     </section>
 
-    <section class="card so-custo" aria-labelledby="h3c" data-step="3" data-recolhe="custo">
+    <section class="card so-custo" aria-labelledby="h3c" data-step="3">
       <div class="step-head"><span class="num-badge">3</span><h2 id="h3c">Custos: encargos e benefícios</h2></div>
-      <div class="resumo-linha" id="resumoCusto"></div>
-      <p class="hint">Encargos (13º, férias, FGTS) vêm do regime tributário. O padrão é o Simples Nacional.</p>
+      <p class="hint">Encargos são os custos obrigatórios além do salário, como 13º, férias e FGTS. Eles são calculados pelo regime tributário (o padrão é o Simples Nacional; troque se a empresa estiver em outro). Informe o vale-transporte por dia, se a equipe usar. Os valores são por funcionário e servem para calcular o custo das contratações e da folha atual.</p>
       <div id="custos" class="custos"></div>
     </section>
 
-    <div data-step="3" class="advwrap"><button type="button" class="adv-toggle" data-act="toggleAdv" id="advBtn" aria-expanded="false">Configurações avançadas</button><p class="hint" style="margin-top: 6px">Opcional: turnos, intervalo, noturno, feriados, vale-refeição e plano de saúde.</p></div>
+    <div data-step="3" class="advwrap"><button type="button" class="adv-toggle" data-act="toggleAdv" id="advBtn" aria-expanded="false">Configurações avançadas</button><p class="hint" style="margin-top: 6px">Opcional. Aqui você ajusta a atividade (urbana ou rural), o adicional noturno, o intervalo de almoço, os feriados por ano, os turnos de cada setor, vale-refeição, plano de saúde e descontos do funcionário.</p></div>
     <section class="card adv" id="adv" hidden aria-label="Configurações avançadas" data-step="3"></section>
 
     <section class="card" aria-labelledby="h3s" id="resultado" data-step="4">
@@ -576,9 +529,10 @@ footer b { color: var(--ink); }
 <dialog id="boasVindas" aria-labelledby="bvTitulo">
   <h2 id="bvTitulo">Antes de começar</h2>
   <ul class="facts">
-    <li><span><b>Simulação não oficial</b>, para planejar. Confirme com seu contador.</span></li>
-    <li><span><b>Nada é enviado para servidores:</b> o que você digita fica neste aparelho.</span></li>
-    <li><span>Dúvidas: <a href="mailto:cerionegiovanne@gmail.com">cerionegiovanne@gmail.com</a></span></li>
+    <li><span><b>Este site não é oficial</b> e não tem vínculo com o governo. É uma simulação para ajudar no planejamento, com base na Emenda Constitucional 141/2026 e na CLT.</span></li>
+    <li><span><b>Nada é enviado para servidores.</b> Tudo o que você digita fica só neste aparelho e é apagado quando você usar "Apagar dados".</span></li>
+    <li><span><b>O resultado é uma estimativa.</b> Confirme com seu contador ou advogado trabalhista antes de decidir.</span></li>
+    <li><span><b>Dúvidas ou questões legais:</b> escreva para <a href="mailto:cerionegiovanne@gmail.com">cerionegiovanne@gmail.com</a>.</span></li>
   </ul>
   <form method="dialog"><button class="primary" value="ok" autofocus>Entendi, começar</button></form>
 </dialog>
@@ -733,22 +687,6 @@ function horarioVazio() {
 function novoSetor() {
   return { id: uid(), nome: '', func: '', salario: '', salNovo: '', minimo: '', jornada: '8', porDiaMin: false, minDia: new Array(7).fill(''), porTurnoMin: false, minTurno: new Array(6).fill(''), minGrade: Array.from({ length: 6 }, () => new Array(7).fill('')), horario: 'loja', proprio: horarioVazio(), turnosModo: 'auto', turnosManual: [] };
 }
-// Modelos prontos de negócios típicos. Faixas [mín, máx] de pessoas ao mesmo tempo e de salário;
-// o site usa o meio da faixa, e a simulação de 1.000 empresas (simulacao/) sorteia dentro dela
-const T_ = true, F_ = false;
-const MODELOS = {
-  padaria: { nome: 'Padaria', icone: '🥖', peso: 12, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['06:00', '20:00'], setores: [['Balcão', 1, 3, 1700, 2100], ['Produção', 1, 2, 1900, 2600]] },
-  mercadinho: { nome: 'Mercadinho', icone: '🛒', peso: 14, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['07:00', '21:00'], setores: [['Caixa', 1, 4, 1650, 1900], ['Reposição', 1, 3, 1700, 2000]] },
-  supermercado: { nome: 'Supermercado', icone: '🏬', peso: 4, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['07:00', '22:00'], setores: [['Caixa', 4, 10, 1700, 1950], ['Reposição', 2, 6, 1750, 2050], ['Açougue e padaria', 2, 4, 2000, 2600]] },
-  restaurante: { nome: 'Restaurante', icone: '🍽️', peso: 12, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['11:00', '23:00'], setores: [['Salão', 2, 5, 1700, 2100], ['Cozinha', 1, 4, 1900, 2700]] },
-  lojaRua: { nome: 'Loja de rua', icone: '🛍️', peso: 12, dias: [T_, T_, T_, T_, T_, T_, F_], hor: ['08:00', '18:00'], setores: [['Vendas', 1, 4, 1650, 2200]] },
-  lojaShopping: { nome: 'Loja de shopping', icone: '🏪', peso: 12, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['10:00', '22:00'], setores: [['Vendas', 1, 4, 1700, 2400]] },
-  farmacia: { nome: 'Farmácia', icone: '💊', peso: 8, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['07:00', '22:00'], setores: [['Balcão', 1, 3, 1700, 2200], ['Farmacêutico', 1, 1, 4200, 5500]] },
-  salao: { nome: 'Salão de beleza', icone: '✂️', peso: 7, dias: [F_, T_, T_, T_, T_, T_, F_], hor: ['09:00', '19:00'], setores: [['Atendimento', 1, 4, 1650, 2300]] },
-  oficina: { nome: 'Oficina ou indústria', icone: '🔧', peso: 9, dias: [T_, T_, T_, T_, T_, T_, F_], hor: ['07:00', '17:00'], setores: [['Produção', 2, 10, 1900, 2800]] },
-  posto: { nome: 'Posto de combustível', icone: '⛽', peso: 6, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['06:00', '22:00'], setores: [['Pista', 1, 3, 1800, 2300]] },
-  hotel: { nome: 'Hotel ou portaria 24h', icone: '🏨', peso: 4, dias: [T_, T_, T_, T_, T_, T_, T_], hor: ['00:00', '00:00'], setores: [['Recepção', 1, 2, 1800, 2400], ['Portaria', 1, 1, 1700, 2000, '12x36']] }
-};
 function blank() {
   return {
     loja: horarioVazio(),
@@ -838,7 +776,7 @@ function contracheque(sal) {
   const liquido = sal - inss - ir - b.vtDesc - b.vrDesc - b.saudeDesc - outrosDesc;
   return { inss, ir, vtDesc: b.vtDesc, vrDesc: b.vrDesc, saudeDesc: b.saudeDesc, outrosDesc, liquido };
 }
-const ui = { adv: false, week: {}, open: {}, det: {}, funcOk: {}, bloco: {} };
+const ui = { adv: false, week: {}, open: {}, det: {} };
 
 // Modo passo a passo (uma etapa por tela) ou página completa; preferência fica no navegador
 const MODO = 'escala5x2:modo';
@@ -848,12 +786,10 @@ const passos = () => ['Funcionamento', 'Setores', soEscala() ? 'Ajustes' : 'Cust
 let modo = null, passo = 1;
 try { modo = localStorage.getItem(MODO); } catch (e) { /* sem armazenamento */ }
 function aplicarModo() {
-  const wiz = modo === 'passo', rapido = modo === 'rapido';
+  const wiz = modo === 'passo';
   document.body.classList.toggle('wiz', wiz);
-  document.body.classList.toggle('rapido', rapido);
-  document.getElementById('rapidoBtn').hidden = rapido;
   document.body.dataset.passo = String(passo);
-  document.getElementById('modoBtn').textContent = rapido ? 'Ver todas as opções' : wiz ? 'Ver tudo numa página' : 'Usar o modo passo a passo';
+  document.getElementById('modoBtn').textContent = wiz ? 'Ver tudo numa página' : 'Usar o modo passo a passo';
   document.getElementById('stepper').innerHTML = passos().map((t, i) =>
     `<button type="button" data-act="irPasso" data-n="${i + 1}"${i + 1 === passo ? ' aria-current="step"' : ''} class="${i + 1 < passo ? 'feito' : ''}"><span class="sn">${i + 1 < passo ? '✓' : i + 1}</span><span class="st">${t}</span></button>`).join('');
   document.getElementById('wizNext').textContent = passo === 3 ? 'Ver resultado' : passo === 4 ? 'Revisar dados' : `Próximo: ${passos()[passo]}`;
@@ -1480,19 +1416,18 @@ function setorHTML(s, i = 0) {
   return `<div class="setor">
     <div class="srow">
       <label class="f s-name" for="${id}-n"><span>Setor</span><input id="${id}-n" data-s="${id}" data-p="nome" value="${esc(s.nome)}" placeholder="Ex.: Atendimento"></label>
-      <label class="f" for="${id}-q"><span>Funcionários</span><input class="${MODELOS[state.config.modelo] && !ui.funcOk[id] ? 'conferir' : ''}" id="${id}-q" type="number" min="0" step="1" inputmode="numeric" data-s="${id}" data-p="func" data-t="num" value="${esc(s.func)}" placeholder="Ex.: 4"></label>
+      <label class="f" for="${id}-q"><span>Funcionários</span><input id="${id}-q" type="number" min="0" step="1" inputmode="numeric" data-s="${id}" data-p="func" data-t="num" value="${esc(s.func)}" placeholder="Ex.: 4"></label>
       <label class="f so-custo" for="${id}-sal"><span>Salário médio</span><span class="money"><input id="${id}-sal" type="number" min="0" step="50" inputmode="decimal" data-s="${id}" data-p="salario" data-t="num" value="${esc(s.salario)}" placeholder="2.100"></span></label>
-      <label class="f" for="${id}-m"><span>Ao mesmo tempo</span><input id="${id}-m" type="number" min="1" step="1" inputmode="numeric" data-s="${id}" data-p="minimo" data-t="num" value="${esc(s.minimo)}" placeholder="Ex.: 2"></label>
+      <label class="f" for="${id}-m"><span>Pessoas por vez</span><input id="${id}-m" type="number" min="1" step="1" inputmode="numeric" data-s="${id}" data-p="minimo" data-t="num" value="${esc(s.minimo)}" placeholder="Ex.: 2"></label>
       <label class="f" for="${id}-h"><span>Horário</span><select id="${id}-h" data-s="${id}" data-p="horario" data-re="1" aria-label="Horário do setor">
         <option value="loja"${s.horario === 'loja' ? ' selected' : ''}>Da empresa</option>
         <option value="proprio"${s.horario === 'proprio' ? ' selected' : ''}>Diferente</option>
       </select></label>
-      <label class="f col-jor" for="${id}-jr"><span>Jornada</span><select id="${id}-jr" data-s="${id}" data-p="jornada" data-re="1" aria-label="Jornada do setor">${Object.entries(JORNADAS).map(([k, j]) => `<option value="${k}"${(s.jornada || '8') === k ? ' selected' : ''}>${j.curto}</option>`).join('')}</select></label>
+      <label class="f" for="${id}-jr"><span>Jornada</span><select id="${id}-jr" data-s="${id}" data-p="jornada" data-re="1" aria-label="Jornada do setor">${Object.entries(JORNADAS).map(([k, j]) => `<option value="${k}"${(s.jornada || '8') === k ? ' selected' : ''}>${j.curto}</option>`).join('')}</select></label>
       <button type="button" class="icon s-del" data-act="delSetor" data-s="${id}" aria-label="Remover setor ${esc(s.nome)}" title="Remover setor">×</button>
     </div>
 
-    ${modo === 'rapido' && !ui.open['opc' + id] && !s.porDiaMin && !s.porTurnoMin && !ui.open['var' + id] && !ui.open['sal' + id] && (s.salNovo === '' || s.salNovo == null)
-      ? `<div><button type="button" class="link mini" data-act="abreOpc" data-s="${id}" aria-expanded="false">Mais opções deste setor</button></div>` : `<div class="setor-links">
+    <div class="setor-links">
     ${s.porDiaMin || s.porTurnoMin || ui.open['var' + id] ? `<div class="toggles">
     <label class="toggle var-dia" for="${id}-pdm"><input type="checkbox" id="${id}-pdm" data-s="${id}" data-p="porDiaMin" data-t="bool" data-re="1"${s.porDiaMin ? ' checked' : ''}> O número de pessoas varia por dia</label>
     <label class="toggle var-dia" for="${id}-ptm"><input type="checkbox" id="${id}-ptm" data-s="${id}" data-p="porTurnoMin" data-t="bool" data-re="1"${s.porTurnoMin ? ' checked' : ''}> O número de pessoas varia por turno</label>
@@ -1500,8 +1435,7 @@ function setorHTML(s, i = 0) {
     ${soEscala() ? '' : s.salNovo !== '' && s.salNovo != null || ui.open['sal' + id]
       ? `<label class="f sal-novo" for="${id}-sn"><span>Salário de quem será contratado</span><span class="money"><input id="${id}-sn" type="number" min="0" step="50" inputmode="decimal" data-s="${id}" data-p="salNovo" data-t="num" value="${esc(s.salNovo)}" placeholder="${esc(s.salario || '1.800')}"></span><small class="hint">Em branco, usa o salário médio. Quem entra costuma ganhar o salário de entrada, menor que a média de quem já está.</small></label>`
       : `<div><button type="button" class="link mini" data-act="abreSal" data-s="${id}">Quem for contratado vai ganhar outro salário?</button></div>`}
-    ${(s.jornada || '8') === '8' ? `<div class="so-rapido"><button type="button" class="link mini" data-act="abreJor" data-s="${id}">Outra jornada (6h, 4h ou 12x36)?</button></div>` : ''}
-    </div>`}
+    </div>
     ${s.porTurnoMin ? minTurnoHTML(s) : s.porDiaMin ? minDiaHTML(s) : ''}
     ${s.horario === 'proprio' ? `<div class="own"><b>Horário próprio${s.nome ? ' de ' + esc(s.nome) : ''}</b>${horarioHTML(id + '-own', s.proprio, id)}</div>` : ''}
   </div>`;
@@ -1593,39 +1527,7 @@ function feriadoPerguntaHTML() {
   const bt = (k, l) => `<button type="button" data-act="feriado" data-v="${k}" aria-pressed="${v === k}">${l}</button>`;
   return `<div class="opts fer-q"><div class="opt"><span class="opt-t" id="q-feriado">A empresa abre em feriados?</span>
     <div class="seg" role="group" aria-labelledby="q-feriado">${bt('fecha', 'Não')}${bt('folga', 'Sim, com folga extra')}${bt('dobro', 'Sim, pagando em dobro')}</div></div>
-    <p class="hint">Quem trabalha no feriado ganha outra folga ou recebe em dobro.</p>
-    <details class="saiba"><summary>Saiba mais</summary><p class="hint">Lei 605/1949, art. 9º. A folga extra pode exigir mais contratações; o pagamento em dobro aumenta o custo da folha. No comércio, abrir em feriado exige autorização na convenção coletiva e respeito à lei do município (Lei 10.101/2000, art. 6º-A). Sem resposta, o cálculo considera que a empresa fecha.</p></details></div>`;
-}
-// Preenche tudo a partir de um modelo pronto (ou começa do zero); a simulação anterior pode ser recuperada
-function aplicarModelo(k) {
-  const anterior = JSON.parse(JSON.stringify(state));
-  const temDados = state.setores.some((s) => !setorVazio(s));
-  const st = blank();
-  st.config.soEscala = state.config.soEscala;
-  st.config.modelo = k;
-  const m = MODELOS[k];
-  if (m) {
-    st.loja = { ...horarioVazio(), dias: m.dias.slice(), ini: m.hor[0], fim: m.hor[1] };
-    st.config.feriadoModo = m.dias[6] ? 'dobro' : 'fecha';
-    st.setores = m.setores.map(([nome, a, b, s1, s2, jor]) => Object.assign(novoSetor(), {
-      nome, minimo: Math.round((a + b) / 2), salario: Math.round((s1 + s2) / 2 / 50) * 50, jornada: jor || '8'
-    }));
-  }
-  state = st;
-  // Equipe de hoje estimada pelo próprio cálculo na regra atual (6x1, 44h); a pessoa corrige
-  if (m) state.setores.forEach((s) => { s.func = analisar(s, 44, 6).need || 0; });
-  if (temDados) ui.anterior = anterior;
-  ui.funcOk = {}; ui.bloco = {};
-  save(); renderForms(); renderResults();
-  setStatus(m ? `Modelo "${m.nome}" aplicado. Confira os funcionários de cada setor.` : 'Começando do zero: informe os dias, o horário e os setores.');
-  const alvo = m ? document.getElementById(state.setores[0].id + '-q') : document.querySelector('#loja [data-act="dia"]');
-  alvo?.focus();
-}
-// Aviso curto: só a primeira frase aparece; o restante (regras e artigos) fica em "Saiba mais"
-function avisoHTML(a) {
-  const m = /^(.+?[.!?])\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ])(.+)$/s.exec(a);
-  if (!m) return `<div class="msg warn">${esc(a)}</div>`;
-  return `<div class="msg warn">${esc(m[1])} <details class="saiba-in"><summary>Saiba mais</summary>${esc(m[2])}</details></div>`;
+    <p class="hint">Quem trabalha no feriado ganha outro dia de folga ou recebe as horas em dobro (Lei 605/1949, art. 9º). A folga extra pode exigir mais contratações; o pagamento em dobro aumenta o custo da folha. No comércio, abrir em feriado exige autorização na convenção coletiva e respeito à lei do município (Lei 10.101/2000, art. 6º-A). Sem resposta, o cálculo considera que a empresa fecha.</p></div>`;
 }
 function maisBtn(key, label = 'Ver detalhes') {
   const on = !!ui.det[key];
@@ -1761,25 +1663,9 @@ function renderForms() {
   document.getElementById('feriadoQ').innerHTML = feriadoPerguntaHTML();
   const so = soEscala();
   document.body.classList.toggle('so-escala', so);
-  // Modelos prontos
-  const mk = state.config.modelo;
-  document.getElementById('modelosGrid').innerHTML = Object.entries(MODELOS).map(([k, m]) =>
-    `<button type="button" class="modelo" data-act="modelo" data-k="${k}" aria-pressed="${mk === k}"><span aria-hidden="true">${m.icone}</span>${m.nome}</button>`).join('')
-    + `<button type="button" class="modelo" data-act="modelo" data-k="zero" aria-pressed="${mk === 'zero'}"><span aria-hidden="true">✏️</span>Outro (do zero)</button>`;
-  document.getElementById('avisoModelo').innerHTML = MODELOS[mk] ? `<p class="aviso-modelo">O modelo estimou a equipe de hoje: confira o número de <b>funcionários</b> de cada setor.</p>` : '';
-  // Blocos recolhidos no modo rápido, com um resumo de uma linha
-  const semDias = !state.loja.dias.some(Boolean);
-  const abreFunc = ui.bloco.func || semDias, abreCusto = !!ui.bloco.custo;
-  document.body.classList.toggle('func-aberto', abreFunc);
-  document.body.classList.toggle('custo-aberto', abreCusto);
-  const mfr = state.config.feriadoModo;
-  document.getElementById('resumoFunc').innerHTML = `<span>${semDias ? 'Informe os dias e o horário.' : `${esc(descreverHorario(state.loja))} · feriados: ${{ fecha: 'fecha', folga: 'abre com folga extra', dobro: 'abre e paga em dobro' }[mfr] || 'não informado'}`}</span>${semDias ? '' : `<button type="button" class="link" data-act="bloco" data-k="func" aria-expanded="${abreFunc}">${abreFunc ? 'Fechar' : 'Ajustar'}</button>`}`;
-  const ben = custoBen(2000, DIAS_MES_5);
-  document.getElementById('resumoCusto').innerHTML = `<span>${esc(REGIMES[state.config.regime]?.label || 'Personalizado')} · encargos de ${pct1.format(+state.config.encargos || 0)}% · ${ben.total > 0.5 ? 'com benefícios' : 'sem benefícios'}</span><button type="button" class="link" data-act="bloco" data-k="custo" aria-expanded="${abreCusto}">${abreCusto ? 'Fechar' : 'Ajustar'}</button>`;
-  document.body.classList.toggle('jor-mostra', !!ui.jorMostra || state.setores.some((s) => (s.jornada || '8') !== '8'));
-  document.getElementById('modoCalc').innerHTML = `<div class="opts fer-q modo-calc"><div class="opt"><span class="opt-t" id="q-modo">Calcular</span>
+  document.getElementById('modoCalc').innerHTML = `<div class="opts fer-q modo-calc"><div class="opt"><span class="opt-t" id="q-modo">O que você quer saber?</span>
     <div class="seg" role="group" aria-labelledby="q-modo"><button type="button" data-act="soEscala" data-v="nao" aria-pressed="${!so}">Escala e custos</button><button type="button" data-act="soEscala" data-v="sim" aria-pressed="${so}">Só a escala</button></div></div>
-    </div>`;
+    <p class="hint">${so ? 'Só a escala: você não informa salários, e o resultado mostra quantas pessoas precisa, se falta gente e um exemplo de escala, sem valores em reais.' : 'Escala e custos: além das pessoas necessárias, calcula quanto custa contratar. Escolha "Só a escala" se quiser apenas saber se precisa de mais gente.'}</p></div>`;
   document.getElementById('setores').innerHTML = state.setores.map(setorHTML).join('') || '<p class="hint">Nenhum setor. Adicione o primeiro.</p>';
   document.getElementById('custos').innerHTML = custosHTML();
   const adv = document.getElementById('adv');
@@ -1844,7 +1730,6 @@ function onField(e) {
   }
   save();
   ui.codigo = ''; // o código gerado antes não vale mais
-  if (p === 'func' && el.dataset.s) ui.funcOk[el.dataset.s] = true;
   if (el.dataset.re) {
     // Mudança de estrutura (seleção, caixa de marcar): redesenha já e mantém o foco no campo
     const fid = el.id;
@@ -2014,29 +1899,12 @@ document.addEventListener('click', (e) => {
     return;
   }
   if (act === 'modo') {
-    modo = modo === 'completo' ? 'passo' : 'completo';
+    modo = modo === 'passo' ? 'completo' : 'passo';
     try { localStorage.setItem(MODO, modo); } catch (err) { /* sem armazenamento */ }
     aplicarModo(); renderResults();
     b.focus();
     return;
   }
-  if (act === 'rapido') {
-    modo = 'rapido';
-    try { localStorage.setItem(MODO, modo); } catch (err) { /* sem armazenamento */ }
-    aplicarModo(); renderForms(); renderResults();
-    document.getElementById('modoBtn').focus();
-    return;
-  }
-  if (act === 'modelo') { aplicarModelo(b.dataset.k); return; }
-  if (act === 'bloco') {
-    const k = b.dataset.k;
-    ui.bloco[k] = !ui.bloco[k];
-    renderForms();
-    document.querySelector(`[data-act="bloco"][data-k="${k}"]`)?.focus();
-    return;
-  }
-  if (act === 'abreOpc') { ui.open['opc' + b.dataset.s] = true; renderForms(); document.querySelector(`[data-act="abreVar"][data-s="${b.dataset.s}"]`)?.focus(); return; }
-  if (act === 'abreJor') { ui.jorMostra = true; renderForms(); document.getElementById(b.dataset.s + '-jr')?.focus(); return; }
   if (act === 'passo') { irPasso(passo + +b.dataset.d); return; }
   if (act === 'irPasso') { irPasso(+b.dataset.n); return; }
   if (act === 'goRes' && modo === 'passo') { irPasso(4); return; }
@@ -2207,7 +2075,7 @@ function setorResHTML(r, c) {
   return `<article class="res">
     <div class="res-head"><h3>${nome}</h3>${badge}</div>
     <p>Precisa de <b>${plural(r.need, 'pessoa', 'pessoas')}</b> · tem <b>${r.cur}</b> · ${plural(r.grupos.length, 'turno', 'turnos')}${r.hires && !soEscala() ? ` · custo das contratações: <b>${brl0.format(r.custo)}</b> por mês` : ''}</p>
-    ${r.avisos.map(avisoHTML).join('')}
+    ${r.avisos.map((a) => `<div class="msg warn">${esc(a)}</div>`).join('')}
     ${maisBtn(key, `Ver detalhes<span class="sr">: ${nome}</span>`)}
     ${ui.det[key] ? `<div class="detail">${explicacaoHTML(r, c)}${soEscala() ? '' : custo}${soEscala() ? '' : noite}${r.hires && !soEscala() ? altSetorHTML(r, c) : ''}<div><button type="button" class="link" data-act="goTurnos" data-sid="${r.s.id}">Ver exemplo de escala deste setor</button></div></div>` : ''}
   </article>`;
@@ -2577,8 +2445,8 @@ function renderResultsSeguro() {
     <div class="tile"><span class="k">Aumento da folha</span><span class="v">${aumento == null ? '—' : (aumento >= 0 ? '+' : '−') + pct1.format(Math.abs(aumento) * 100) + '%'}</span></div>
   </div>`;
   let msg = '';
-  if (ok.length && !c.hires) msg = `<div class="msg ok">Não precisa contratar: reorganizando turnos e folgas, a equipe atual dá conta.</div>`;
-  else if (c.hires) msg = `<div class="msg info">Mesmo reorganizando turnos e folgas, ${c.hires === 1 ? 'falta' : 'faltam'} <b>${plural(c.hires, 'pessoa', 'pessoas')}</b> para cobrir o horário com 2 folgas por semana.</div>`;
+  if (ok.length && !c.hires) msg = `<div class="msg ok">Não é preciso contratar: reorganizando turnos e folgas, a equipe atual cobre o horário de funcionamento e o número de pessoas ao mesmo tempo que você informou. Veja um exemplo de escala abaixo.</div>`;
+  else if (c.hires) msg = `<div class="msg info">Mesmo reorganizando turnos e folgas, ${c.hires === 1 ? 'falta' : 'faltam'} <b>${plural(c.hires, 'pessoa', 'pessoas')}</b> para cobrir o horário de funcionamento com o número de pessoas ao mesmo tempo que você informou. ${so ? 'Veja abaixo quantas pessoas cada setor precisa e um exemplo de escala.' : 'Veja abaixo até quando contratar e se dá para evitar alguma contratação.'}</div>`;
   if (c.semSalario && !so) msg += '<div class="msg warn">Falta o salário médio de algum setor que precisa contratar, então o custo extra mostrado fica abaixo do real. Informe o salário na etapa 2.</div>';
   const semFeriado = !['fecha', 'folga', 'dobro'].includes(state.config.feriadoModo);
   if (semFeriado) msg += '<div class="msg warn">Você não informou se a empresa abre em feriados (etapa 1). Por enquanto, o cálculo considera que fecha.</div>';
@@ -2607,10 +2475,10 @@ function renderResultsSeguro() {
   }
   if (ok.length) secoes += `<section class="sec" id="sec-comp"><div class="sec-head"><h3>Compartilhar com o contador</h3></div>${compartilharHTML()}</section>`;
   if (ok.length && !so) secoes += `<section class="sec" id="sec-cen"><div class="sec-head"><h3>Comparar cenários</h3></div>${cenariosHTML(c)}</section>`;
-  const mais = secoes ? `<section class="sec mais"><div class="sec-head"><h3>Mais análises</h3></div>
-    <p class="hint">${so ? 'Compartilhar com o contador.' : 'Linha do tempo, antes e depois, alternativas à contratação, compartilhar e comparar cenários.'}</p>
-    ${maisBtn('mais', 'Ver mais análises')}${ui.det.mais ? `<div class="detail mais-det">${secoes}</div>` : ''}</section>` : '';
-  out.innerHTML = tiles + msg + premissas + (ok.length ? '<p class="hint">Próximo passo: <button type="button" class="link" data-act="pdf">salve o resultado em PDF</button> e mostre ao seu contador.</p>' : '') + `<div class="sec-head" id="sec-setores"><h3>Por setor</h3></div>` + filled.map((r) => setorResHTML(r, c)).join('') + mais;
+  const atalhos = ok.length ? `<nav class="atalhos" aria-label="Ir para uma parte do resultado">${[
+    !so && ['sec-tl', 'Linha do tempo'], !so && ['sec-cmp', 'Antes e depois'], !so && c.hires && ['sec-alt', 'Alternativas'], ['sec-comp', 'Compartilhar'], !so && ['sec-cen', 'Cenários'], ['sec-setores', 'Por setor'], ['turnos', 'Escala']
+  ].filter(Boolean).map(([id, l]) => `<a href="#${id}">${l}</a>`).join('')}</nav>` : '';
+  out.innerHTML = tiles + msg + premissas + (ok.length ? '<p class="hint">Próximo passo: <button type="button" class="link" data-act="pdf">salve o resultado em PDF</button> e mostre ao seu contador antes de decidir.</p>' : '') + atalhos + secoes + `<div class="sec-head" id="sec-setores"><h3>Por setor</h3></div>` + filled.map((r) => setorResHTML(r, c)).join('');
   renderTurnos(c);
 }
 
@@ -3022,8 +2890,8 @@ async function salvarPDF(btn) {
   }
 }
 
-// Sem preferência salva: modo rápido (modelos + setores + resultado)
-if (!['rapido', 'completo', 'passo'].includes(modo)) modo = 'rapido';
+// Primeira visita sem dados: começa no passo a passo
+if (!modo) modo = state.setores.some((x) => !setorVazio(x)) ? 'completo' : 'passo';
 aplicarModo();
 renderForms();
 renderResults();

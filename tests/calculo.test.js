@@ -245,17 +245,3 @@ test('só a escala: PDF, Excel e avisos sem valores em reais', () => {
     assert.ok(!/R\$|Custo/.test(csv), `aba ${nome} com custo`);
   }
 });
-
-test('modelos prontos: todos calculam sem erro, com cobertura e jornada respeitadas', () => {
-  const app = carregarApp();
-  const chaves = Object.keys(app.MODELOS);
-  assert.ok(chaves.length >= 10);
-  for (const k of chaves) {
-    app.aplicarModelo(k);
-    const c = app.compute();
-    const ok = c.res.filter((r) => !r.vazio && !r.erros.length);
-    assert.equal(ok.length, app.MODELOS[k].setores.length, `${k}: setor com erro`);
-    ok.forEach((r) => { assert.ok(r.cur > 0, `${k}: equipe estimada`); verificaSetor(r, `modelo ${k}`); });
-    assert.ok(Number.isFinite(c.extra));
-  }
-});

@@ -52,7 +52,7 @@ function carregarApp(guardado = null) {
   // Expõe o que os testes usam; o código do site não muda
   const exporta = `
 ;globalThis.__app = {
-  compute, analisar, aplicarModelo, MODELOS, combinacoesSetor, alternativasSetor, transicao, normalizar, blank, horarioVazio, novoSetor, buildSchedule, opcoesEscalaHTML,
+  compute, analisar, combinacoesSetor, alternativasSetor, transicao, normalizar, blank, horarioVazio, novoSetor, buildSchedule, opcoesEscalaHTML,
   renderResults, renderForms, alternativas, montarPDF, montarExcel, resumoCenario, custoNoturno, diasAlta, feriadosAno,
   get state() { return state; }, set state(v) { state = v; },
   get cenarios() { return cenarios; }, set cenarios(v) { cenarios = v; },

@@ -31,12 +31,6 @@ async function abrir(tela, { modo = 'completo', contexto } = {}) {
   await p.goto('file://' + pagina);
   return { p, ctx, erros };
 }
-// Abre "Mais análises" no resultado (linha do tempo, cenários, compartilhar)
-async function abreMais(p) {
-  if (await p.$('#results .mais-det')) return;
-  await p.click('#results [data-act="det"][data-k="mais"]');
-  await p.waitForSelector('#results .mais-det');
-}
 async function preencher(p, { fim = '20:00', func = '4', minimo = '2' } = {}) {
   for (const i of [0, 1, 2, 3, 4, 5, 6]) await p.click(`#loja [data-act="dia"][data-i="${i}"]`);
   await p.fill('#loja-ini', '08:00');
@@ -63,9 +57,9 @@ for (const tela of Object.keys(TELAS)) {
     await p.click('#results [data-act="det"][data-k="prem"]');
     await p.click('#results [data-act="feriado"][data-v="folga"]');
     assert.equal(await p.$eval('#feriadoQ [aria-pressed="true"]', (e) => e.dataset.v), 'folga');
-    // Análises extras ficam recolhidas e abrem num clique
-    await abreMais(p);
-    assert.ok(await p.$('#sec-tl'), 'linha do tempo dentro de Mais análises');
+    // Atalhos apontam para seções que existem
+    const alvos = await p.$$eval('.atalhos a', (as) => as.map((a) => a.getAttribute('href')));
+    for (const h of alvos) assert.ok(await p.$(h), `atalho sem destino: ${h}`);
     assert.deepEqual(erros, []);
     await ctx.close();
   });
@@ -93,7 +87,6 @@ for (const tela of Object.keys(TELAS)) {
 test('cenários: guardar, recarregar, abrir e voltar à simulação anterior', async () => {
   const { p, ctx, erros } = await abrir('computador');
   await preencher(p);
-  await abreMais(p);
   await p.fill('#cenNome', 'Sete dias');
   await p.click('[data-act="cenSalvar"]');
   await p.click('#loja [data-act="dia"][data-i="6"]'); // fecha domingo
@@ -102,7 +95,6 @@ test('cenários: guardar, recarregar, abrir e voltar à simulação anterior', a
   assert.deepEqual(await p.$$eval('table.cen thead th', (t) => t.map((x) => x.textContent)), ['', 'Atual', 'Sete dias', 'Sem domingo']);
   await p.reload();
   assert.deepEqual(await p.evaluate(() => cenarios.map((c) => c.nome)), ['Sete dias', 'Sem domingo']);
-  await abreMais(p);
   await p.click('[data-act="cenAbrir"][data-i="0"]');
   assert.equal(await p.evaluate(() => state.loja.dias[6]), true, 'abriu o cenário com domingo');
   await p.click('[data-act="cenVoltar"]');
@@ -196,7 +188,6 @@ test('fora do claude.ai: PDF e Excel baixam por link comum', async () => {
 test('compartilhar: o link leva a mesma simulação para outra pessoa', async () => {
   const { p, ctx } = await abrir('computador');
   await preencher(p);
-  await abreMais(p);
   await p.click('[data-act="compartilhar"]');
   await p.waitForSelector('#codigoSim');
   const link = await p.$eval('#codigoSim', (e) => e.value);
@@ -225,7 +216,7 @@ test('primeira visita: aviso com não oficial, dados locais e contato; não volt
   await p.goto('file://' + pagina);
   assert.equal(await p.$eval('#boasVindas', (d) => d.open), true);
   const txt = await p.$eval('#boasVindas', (d) => d.textContent);
-  for (const t of ['não oficial', 'Nada é enviado para servidores', 'cerionegiovanne@gmail.com']) assert.ok(txt.includes(t), t);
+  for (const t of ['não é oficial', 'Nada é enviado para servidores', 'cerionegiovanne@gmail.com']) assert.ok(txt.includes(t), t);
   await p.click('#boasVindas button');
   assert.equal(await p.$eval('#boasVindas', (d) => d.open), false);
   await p.reload();
@@ -246,27 +237,6 @@ test('só a escala: sem salário, sem valores em reais no resultado', async () =
   assert.ok(!txt.includes('R$'), 'resultado sem valores em reais');
   assert.match(txt, /Pessoas necessárias/);
   assert.equal(await p.isVisible('section[aria-labelledby="h3c"]'), false, 'etapa de custos escondida');
-  assert.deepEqual(erros, []);
-  await ctx.close();
-});
-
-test('modo rápido: um modelo pronto mostra o resultado em um clique', async () => {
-  const ctx = await navegador.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
-  const p = await ctx.newPage();
-  const erros = []; p.on('pageerror', (e) => erros.push(e.message));
-  await p.addInitScript(() => localStorage.setItem('escala5x2:aviso', '1'));
-  await p.goto('file://' + pagina);
-  assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), true, 'modo rápido é o padrão');
-  await p.click('[data-act="modelo"][data-k="padaria"]');
-  await p.waitForSelector('#results .tile');
-  assert.match(await p.$eval('#results', (e) => e.innerText), /Contratações/);
-  assert.equal(await p.isVisible('#loja'), false, 'dias e horário recolhidos');
-  assert.ok(await p.$('input.conferir'), 'funcionários destacados para conferir');
-  assert.equal(await rolagemLateral(p), 0);
-  await p.click('[data-act="bloco"][data-k="func"]');
-  assert.equal(await p.isVisible('#loja'), true, '"Ajustar" abre dias e horário');
-  await p.click('#modoBtn');
-  assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), false, '"Ver todas as opções" sai do modo rápido');
   assert.deepEqual(erros, []);
   await ctx.close();
 });

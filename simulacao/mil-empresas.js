@@ -7,8 +7,22 @@ let seed = 20261019;
 const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
 const int = (a, b) => a + Math.floor(rnd() * (b - a + 1));
 const de = (l) => l[Math.floor(rnd() * l.length)];
-// Perfis = os modelos prontos do próprio site (MODELOS em index.html), com peso ≈ participação entre empresas em 6x1
-const PERFIS = Object.values(carregarApp().MODELOS).map((m) => ({ ...m, hor: [m.hor] }));
+const T = true, F = false;
+
+// Perfis (peso ≈ participação entre empresas em 6x1); setores: [nome, pessoas ao mesmo tempo min-max, salário min-max]
+const PERFIS = [
+  { nome: 'Padaria', peso: 12, dias: [T,T,T,T,T,T,T], hor: [['06:00','20:00'],['06:00','21:00']], setores: [['Balcão',1,3,1700,2100],['Produção',1,2,1900,2600]] },
+  { nome: 'Mercadinho', peso: 14, dias: [T,T,T,T,T,T,T], hor: [['07:00','21:00'],['08:00','20:00']], setores: [['Caixa',1,4,1650,1900],['Reposição',1,3,1700,2000]] },
+  { nome: 'Restaurante', peso: 12, dias: [T,T,T,T,T,T,T], hor: [['11:00','23:00'],['11:00','15:00']], setores: [['Salão',2,5,1700,2100],['Cozinha',1,4,1900,2700]] },
+  { nome: 'Loja de shopping', peso: 12, dias: [T,T,T,T,T,T,T], hor: [['10:00','22:00']], setores: [['Vendas',1,4,1700,2400]] },
+  { nome: 'Loja de rua', peso: 12, dias: [T,T,T,T,T,T,F], hor: [['08:00','18:00'],['09:00','19:00']], setores: [['Vendas',1,4,1650,2200]] },
+  { nome: 'Farmácia', peso: 8, dias: [T,T,T,T,T,T,T], hor: [['07:00','22:00']], setores: [['Balcão',1,3,1700,2200],['Farmacêutico',1,1,4200,5500]] },
+  { nome: 'Salão de beleza', peso: 7, dias: [F,T,T,T,T,T,F], hor: [['09:00','19:00']], setores: [['Atendimento',1,4,1650,2300]] },
+  { nome: 'Oficina / pequena indústria', peso: 9, dias: [T,T,T,T,T,T,F], hor: [['07:00','17:00']], setores: [['Produção',2,10,1900,2800]] },
+  { nome: 'Posto de combustível', peso: 6, dias: [T,T,T,T,T,T,T], hor: [['00:00','00:00'],['06:00','22:00']], setores: [['Pista',1,3,1800,2300]] },
+  { nome: 'Hotel / portaria 24h', peso: 4, dias: [T,T,T,T,T,T,T], hor: [['00:00','00:00']], setores: [['Recepção',1,2,1800,2400],['Portaria',1,1,1700,2000]] },
+  { nome: 'Supermercado médio', peso: 4, dias: [T,T,T,T,T,T,T], hor: [['07:00','22:00']], setores: [['Caixa',4,10,1700,1950],['Reposição',2,6,1750,2050],['Açougue/padaria',2,4,2000,2600]] },
+];
 const somaPeso = PERFIS.reduce((a, p) => a + p.peso, 0);
 const sorteiaPerfil = () => { let x = rnd() * somaPeso; for (const p of PERFIS) { if ((x -= p.peso) < 0) return p; } return PERFIS[0]; };
 
@@ -19,9 +33,9 @@ for (let i = 0; i < N; i++) {
   const st = app.state;
   const [ini, fim] = de(perfil.hor);
   st.loja = { ...app.horarioVazio(), dias: perfil.dias.slice(), ini, fim };
-  st.setores = perfil.setores.map(([nome, a, b, s1, s2, jor]) => Object.assign(app.novoSetor(), {
+  st.setores = perfil.setores.map(([nome, a, b, s1, s2]) => Object.assign(app.novoSetor(), {
     nome, minimo: int(a, b), salario: Math.round(int(s1, s2) / 50) * 50,
-    jornada: jor || '8', func: 0
+    jornada: perfil.nome.startsWith('Hotel') && nome === 'Portaria' ? '12x36' : '8', func: 0
   }));
   Object.assign(st.config, {
     regime: rnd() < 0.8 ? 'simples' : 'presumido', ferias: true,
