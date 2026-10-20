@@ -82,7 +82,7 @@ for (const tela of Object.keys(TELAS)) {
     await p.click('#advBtn');
     await p.click('[data-act="det"][data-k="prem"]');
     await p.click(`[data-act="det"][data-k="s${sid}"]`);
-    await p.$$eval('footer details', (ds) => ds.forEach((d) => { d.open = true; }));
+    await p.$$eval('footer details, #results .detail details', (ds) => ds.forEach((d) => { d.open = true; }));
     assert.deepEqual(await audita(), [], 'página preenchida');
     await p.click('#btnContraste');
     assert.deepEqual(await audita(), [], 'alto contraste');
@@ -246,6 +246,22 @@ test('só a escala: sem salário, sem valores em reais no resultado', async () =
   assert.ok(!txt.includes('R$'), 'resultado sem valores em reais');
   assert.match(txt, /Pessoas necessárias/);
   assert.equal(await p.isVisible('section[aria-labelledby="h3c"]'), false, 'etapa de custos escondida');
+  assert.deepEqual(erros, []);
+  await ctx.close();
+});
+
+test('detalhe do setor: resumo por turno e a conta completa num clique', async () => {
+  const { p, ctx, erros } = await abrir('celular');
+  const sid = await preencher(p, { fim: '22:00', func: '3', minimo: '3' });
+  await p.click(`[data-act="det"][data-k="s${sid}"]`);
+  const det = '#results .det-setor';
+  assert.equal(await p.$$eval(`${det} table.conta tbody tr`, (t) => t.length), 2, 'uma linha por turno');
+  assert.match(await p.$eval(`${det} .total-det`, (e) => e.innerText), /Precisa de \d+ · tem 3 · faltam \d+/);
+  const conta = `${det} details.saiba:has(> summary:text("Ver a conta passo a passo"))`;
+  assert.equal(await p.isVisible(`${conta} ol`), false, 'a conta por extenso começa fechada');
+  await p.click(`${conta} > summary`);
+  assert.match(await p.$eval(`${conta} ol`, (e) => e.innerText), /dias de trabalho a cobrir por semana.*÷/s);
+  assert.equal(await rolagemLateral(p), 0);
   assert.deepEqual(erros, []);
   await ctx.close();
 });
