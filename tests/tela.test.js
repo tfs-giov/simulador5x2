@@ -263,23 +263,34 @@ test('modo rápido: dias, horário e funcionários prontos dão o resultado', as
   await p.fill('#rq-custo', '2600');
   const sal = await p.evaluate(() => state.setores[0].salario);
   assert.ok(sal > 1800 && sal < 2200, `custo de R$ 2.600 vira salário perto de R$ 2.000 no Simples (veio ${sal})`);
-  assert.match(await p.$eval('#rqCusto', (e) => e.textContent), /salário de cerca de/);
+  assert.match(await p.$eval('#rqCusto', (e) => e.textContent), /salário de/);
   await p.waitForSelector('#results .tile');
   const s = await p.evaluate(() => ({ nome: state.setores[0].nome, minimo: state.setores[0].minimo, dias: state.loja.dias.filter(Boolean).length, ini: state.loja.ini }));
   assert.deepEqual([s.nome, s.dias, s.ini], ['Equipe', 7, '08:00']);
   assert.ok(s.minimo >= 1, 'pessoas ao mesmo tempo deduzidas da equipe');
-  assert.match(await p.$eval('#rqInfer', (e) => e.textContent), /ao mesmo tempo/);
+  assert.match(await p.$eval('#rqInfer', (e) => e.textContent), /estimado/);
+  assert.equal(await p.$eval('#rq-min', (e) => e.value), String(s.minimo));
   assert.match(await p.$eval('#results', (e) => e.innerText), /Contratações/);
   assert.equal(await p.isVisible('#loja'), false, 'dias e horário detalhados ficam recolhidos');
   assert.equal(await rolagemLateral(p), 0);
-  // "Mudar" abre os setores para corrigir; corrigir fixa o número
-  await p.click('#rqInfer [data-act="bloco"]');
-  const sid = await p.evaluate(() => state.setores[0].id);
-  await p.fill(`#${sid}-m`, '3');
+  // Corrigir "ao mesmo tempo" na própria caixa fixa o número; "Usar a estimativa" volta ao cálculo
+  await p.fill('#rq-min', '3');
   await p.fill('#rq-func', '9');
   assert.equal(await p.evaluate(() => state.setores[0].minimo), 3, 'número informado à mão não é sobrescrito');
-  await p.click('#modoBtn');
+  await p.click('[data-act="rqEstimar"]');
+  assert.notEqual(await p.evaluate(() => state.setores[0].minimoManual), true);
+  // Outro horário e outros dias são editados na própria caixa
+  await p.click('[data-act="rqOutro"][data-k="hora"]');
+  await p.fill('#rq-ini', '07:00'); await p.fill('#rq-fim', '19:00');
+  await p.click('[data-act="rqOutro"][data-k="dias"]');
+  await p.click('[data-act="rqDia"][data-i="6"]');
+  assert.deepEqual(await p.evaluate(() => [state.loja.ini, state.loja.fim, state.loja.dias[6]]), ['07:00', '19:00', false]);
+  // Rápido ⇄ Detalhado mantém os dados
+  await p.click('#modoDet');
   assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), false);
+  assert.equal(await p.isVisible(`#${await p.evaluate(() => state.setores[0].id)}-q`), true, 'setores visíveis no detalhado');
+  await p.click('#modoRapido');
+  assert.equal(await p.$eval('#rq-func', (e) => e.value), '9');
   assert.deepEqual(erros, []);
   await ctx.close();
 });

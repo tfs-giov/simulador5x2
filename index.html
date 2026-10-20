@@ -201,8 +201,16 @@ h4 { margin: 0; font-size: 0.9375rem; color: var(--title); }
 .fer-q { border-top: 0; margin-top: 16px; }
 .modo-calc { margin: 0 0 12px; }
 .rapido-form { display: none; }
-.rapido-det-titulo { display: none; }
-body.rapido .rapido-det-titulo { display: block; }
+.rapido-cta { display: none; }
+body.rapido .rapido-cta { display: grid; }
+body.rapido [data-recolhe], body.rapido .advwrap, body.rapido #adv { display: none !important; }
+.modo-seg button { min-width: 112px; }
+#modoBtn[hidden] { display: none; }
+.dias-mini { margin-top: 6px; }
+.dias-mini .chip { min-width: 52px; }
+.rq-horas { display: grid; grid-template-columns: repeat(2, minmax(0, 140px)); gap: 12px; margin-top: 6px; }
+.rq-campos.so { grid-template-columns: minmax(0, 160px) minmax(0, 160px); }
+.rq-nota:empty { display: none; }
 .rapido-det-titulo h2 { margin: 8px 0 2px; font-size: 1.25rem; color: var(--title); }
 .rapido-det-titulo small { font-weight: 500; color: var(--muted); font-size: 0.875rem; }
 body.rapido main .inner > * { order: 10; }
@@ -211,7 +219,7 @@ body.rapido main .inner > .intro { order: 1; }
 body.rapido main .inner > .rapido-form { order: 2; }
 body.rapido main .inner > #resultado { order: 3; }
 body.rapido main .inner > #turnos { order: 4; }
-body.rapido main .inner > .rapido-det-titulo { order: 5; }
+body.rapido main .inner > .rapido-cta { order: 5; }
 .rapido-form .hint { margin: 2px 0 0; }
 .rq-n { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 8px; border-radius: 50%; background: var(--primary); color: var(--primary-ink); font-size: 0.75rem; }
 .rapido-form .modo-calc { border-top: 1px solid var(--line); padding-top: 12px; }
@@ -223,8 +231,8 @@ body.rapido .rapido-form { display: grid; gap: 14px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-weight: 600; min-height: 40px; }
 .chip[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); }
-.rq-campos { display: grid; grid-template-columns: minmax(0, 180px) minmax(0, 260px); gap: 12px; align-items: end; }
-@media (max-width: 420px) { .rq-campos { grid-template-columns: 1fr 1fr; } }
+.rq-campos { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 150px) minmax(0, 220px); gap: 12px; align-items: end; }
+@media (max-width: 520px) { .rq-campos { grid-template-columns: 1fr 1fr; } .rq-campos > :last-child:nth-child(3) { grid-column: 1 / -1; } }
 body.rapido .rapido-form .modo-calc { margin: 0; }
 body.rapido:not(.setor-aberto) [data-recolhe="setor"] > :not(.step-head):not(.resumo-linha) { display: none !important; }
 details.saiba-in { display: inline; }
@@ -256,7 +264,6 @@ body.rapido:not(.jor-mostra) .col-jor { display: none !important; }
 body.rapido:not(.jor-mostra) .shead, body.rapido:not(.jor-mostra) .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .95fr) minmax(0, .9fr) minmax(0, 1fr) 32px; }
 body.rapido.so-escala:not(.jor-mostra) .shead, body.rapido.so-escala:not(.jor-mostra) .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .9fr) minmax(0, 1fr) 32px; }
 @media (max-width: 900px) { body.rapido .srow { grid-template-columns: 1fr 1fr !important; } }
-#rapidoBtn[hidden] { display: none; }
 body.so-escala .so-custo { display: none !important; }
 body.so-escala .shead, body.so-escala .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .75fr) minmax(0, 1fr) minmax(0, 1.35fr) 32px; }
 @media (max-width: 900px) { body.so-escala .srow { grid-template-columns: 1fr 1fr; } }
@@ -519,8 +526,11 @@ footer b { color: var(--ink); }
   <div class="inner">
     <div class="modo" id="modoBar">
       <nav class="stepper" id="stepper" aria-label="Etapas"></nav>
+      <div class="modo-seg seg" role="group" aria-label="Modo do simulador">
+        <button type="button" data-act="setModo" data-v="rapido" id="modoRapido">Rápido</button>
+        <button type="button" data-act="setModo" data-v="det" id="modoDet">Detalhado</button>
+      </div>
       <button type="button" class="link" data-act="modo" id="modoBtn"></button>
-      <button type="button" class="link" data-act="rapido" id="rapidoBtn">Voltar ao modo rápido</button>
     </div>
     <section class="intro" data-step="1">
       <h1>Fim da escala 6x1: quantas pessoas contratar e quanto custa</h1>
@@ -539,11 +549,13 @@ footer b { color: var(--ink); }
     </section>
 
     <section class="card rapido-form" aria-labelledby="hRap" data-step="1">
-      <div><h2 id="hRap">Simulação rápida</h2>
-      <p class="hint">Três respostas e o resultado sai na hora. Para mais precisão (vários setores, turnos, feriados, benefícios), use os ajustes detalhados abaixo do resultado ou "Ver todas as opções".</p></div>
+      <h2 id="hRap">Simulação rápida</h2>
       <div id="rapidoForm"></div>
     </section>
-    <div class="rapido-det-titulo"><h2>Ajustes detalhados <small>(opcional)</small></h2><p class="hint">Mude o que o modo rápido supõe. Cada bloco abre em "Ajustar".</p></div>
+    <section class="card rapido-cta" aria-label="Modo detalhado">
+      <p><b>Precisa de mais detalhes?</b> Vários setores, turnos, feriados e benefícios ficam no modo detalhado. Os dados que você já informou continuam.</p>
+      <div><button type="button" data-act="setModo" data-v="det">Abrir o modo detalhado</button></div>
+    </section>
 
     <section class="card" aria-labelledby="h1s" data-step="1" data-recolhe="func">
       <div class="step-head"><span class="num-badge">1</span><h2 id="h1s">Dias e horário de funcionamento</h2></div>
@@ -880,9 +892,11 @@ function aplicarModo() {
   const wiz = modo === 'passo', rapido = modo === 'rapido';
   document.body.classList.toggle('wiz', wiz);
   document.body.classList.toggle('rapido', rapido);
-  document.getElementById('rapidoBtn').hidden = rapido;
+  document.getElementById('modoRapido').setAttribute('aria-pressed', String(rapido));
+  document.getElementById('modoDet').setAttribute('aria-pressed', String(!rapido));
+  document.getElementById('modoBtn').hidden = rapido;
   document.body.dataset.passo = String(passo);
-  document.getElementById('modoBtn').textContent = rapido ? 'Ver todas as opções' : wiz ? 'Ver tudo numa página' : 'Usar o modo passo a passo';
+  document.getElementById('modoBtn').textContent = wiz ? 'Ver tudo numa página' : 'Uma etapa por vez';
   document.getElementById('stepper').innerHTML = passos().map((t, i) =>
     `<button type="button" data-act="irPasso" data-n="${i + 1}"${i + 1 === passo ? ' aria-current="step"' : ''} class="${i + 1 < passo ? 'feito' : ''}"><span class="sn">${i + 1 < passo ? '✓' : i + 1}</span><span class="st">${t}</span></button>`).join('');
   document.getElementById('wizNext').textContent = passo === 3 ? 'Ver resultado' : passo === 4 ? 'Revisar dados' : `Próximo: ${passos()[passo]}`;
@@ -1674,22 +1688,27 @@ function atualizaResumoSetor() {
 function rapidoFormHTML() {
   const L = state.loja, varios = state.setores.filter((x) => !setorVazio(x)).length > 1;
   const igual = (a, b) => a.every((v, i) => !!v === !!b[i]);
-  const chip = (act, k, nome, on) => `<button type="button" class="chip" data-act="${act}" data-k="${k}" aria-pressed="${on}">${nome}</button>`;
+  const chip = (act, k, nome, on, extra = '') => `<button type="button" class="chip" data-act="${act}" data-k="${k}" aria-pressed="${on}"${extra}>${nome}</button>`;
   const diasOn = Object.entries(DIAS_PRONTOS).find(([, d]) => igual(d.dias, L.dias))?.[0];
   const horaOn = !L.porDia && Object.entries(HORAS_PRONTAS).find(([, h]) => h.ini === L.ini && h.fim === L.fim)?.[0];
-  const outrosDias = L.dias.some(Boolean) && !diasOn, outraHora = L.ini && L.fim && !horaOn;
+  const outrosDias = !!ui.rqDias || (L.dias.some(Boolean) && !diasOn);
+  const outraHora = !!ui.rqHora || (!!L.ini && !!L.fim && !horaOn);
   const s = state.setores[0] || novoSetor();
   const so = soEscala();
-  return `<div class="rq"><span class="rq-t" id="rq-dias"><span class="rq-n">1</span>Em que dias abre?</span><div class="chips" role="group" aria-labelledby="rq-dias">${Object.entries(DIAS_PRONTOS).map(([k, d]) => chip('rqDias', k, d.nome, diasOn === k)).join('')}${chip('rqOutro', 'dias', 'Outros dias', outrosDias)}</div></div>
-    <div class="rq"><span class="rq-t" id="rq-hora"><span class="rq-n">2</span>Em que horário?</span><div class="chips" role="group" aria-labelledby="rq-hora">${Object.entries(HORAS_PRONTAS).map(([k, h]) => chip('rqHora', k, h.nome, horaOn === k)).join('')}${chip('rqOutro', 'hora', outraHora ? `${esc(L.ini)} às ${esc(L.fim)}` : 'Outro horário', !!outraHora)}</div></div>
-    <div class="rq"><span class="rq-t"><span class="rq-n">3</span>Sua equipe hoje</span>
-    ${varios ? `<p class="hint">Esta simulação tem vários setores: ajuste os funcionários em "Setores", abaixo.</p>` : `<div class="rq-campos">
+  const diasMini = outrosDias ? `<div class="chips dias-mini" role="group" aria-label="Dias em que abre">${DIAS.map((d, i) => `<button type="button" class="chip" data-act="rqDia" data-i="${i}" aria-pressed="${!!L.dias[i]}" aria-label="${DIAS_LONGO[i]}">${d}</button>`).join('')}</div>` : '';
+  const horaLivre = outraHora ? `<div class="rq-horas"><label class="f" for="rq-ini"><span>Abre às</span><input id="rq-ini" class="hora" inputmode="numeric" maxlength="5" placeholder="08:00" autocomplete="off" data-p="loja.ini" value="${esc(L.ini)}"></label>
+      <label class="f" for="rq-fim"><span>Fecha às</span><input id="rq-fim" class="hora" inputmode="numeric" maxlength="5" placeholder="18:00" autocomplete="off" data-p="loja.fim" value="${esc(L.fim)}"></label></div>` : '';
+  const equipe = varios
+    ? `<p>Esta simulação tem vários setores. <button type="button" class="link" data-act="setModo" data-v="det">Ajustar no modo detalhado</button></p>`
+    : `<div class="rq-campos${so ? ' so' : ''}">
       <label class="f" for="rq-func"><span>Funcionários</span><input id="rq-func" type="number" min="1" step="1" inputmode="numeric" data-s="${s.id}" data-p="func" data-t="num" value="${esc(s.func)}" placeholder="Ex.: 8"></label>
-      ${so ? '' : `<label class="f" for="rq-custo"><span>Custo médio por funcionário</span><span class="money"><input id="rq-custo" type="number" min="0" step="50" inputmode="decimal" data-s="${s.id}" data-p="custoMedio" data-t="num" value="${esc(custoMedioDe(s))}" placeholder="Opcional"></span></label>`}
+      <label class="f" for="rq-min"><span>Ao mesmo tempo</span><input id="rq-min" type="number" min="1" step="1" inputmode="numeric" data-s="${s.id}" data-p="minimo" data-t="num" value="${esc(s.minimo)}" placeholder="Ex.: 2" aria-describedby="rqInfer"></label>
+      ${so ? '' : `<label class="f" for="rq-custo"><span>Custo por funcionário</span><span class="money"><input id="rq-custo" type="number" min="0" step="50" inputmode="decimal" data-s="${s.id}" data-p="custoMedio" data-t="num" value="${esc(custoMedioDe(s))}" placeholder="Opcional" aria-describedby="rqCusto"></span></label>`}
     </div>
-    ${so ? '' : `<p class="hint" id="rqCusto">${custoTexto(s)}</p>`}
-    <p class="hint" id="rqInfer">${inferenciaTexto(s)}</p>`}
-    </div>
+    <p class="hint rq-nota"><span id="rqInfer">${inferenciaTexto(s)}</span>${so ? '' : ` <span id="rqCusto">${custoTexto(s)}</span>`}</p>`;
+  return `<div class="rq"><span class="rq-t" id="rq-dias"><span class="rq-n">1</span>Dias</span><div class="chips" role="group" aria-labelledby="rq-dias">${Object.entries(DIAS_PRONTOS).map(([k, d]) => chip('rqDias', k, d.nome, !ui.rqDias && diasOn === k)).join('')}${chip('rqOutro', 'dias', 'Outros', outrosDias)}</div>${diasMini}</div>
+    <div class="rq"><span class="rq-t" id="rq-hora"><span class="rq-n">2</span>Horário</span><div class="chips" role="group" aria-labelledby="rq-hora">${Object.entries(HORAS_PRONTAS).map(([k, h]) => chip('rqHora', k, h.nome, !ui.rqHora && horaOn === k)).join('')}${chip('rqOutro', 'hora', 'Outro', outraHora)}</div>${horaLivre}</div>
+    <div class="rq"><span class="rq-t"><span class="rq-n">3</span>Equipe</span>${equipe}</div>
     <div id="modoCalcR"></div>`;
 }
 // Custo por funcionário (salário + encargos + benefícios, por mês) ↔ salário usado no cálculo
@@ -1705,13 +1724,11 @@ function custoMedioDe(s) {
   return +s.salario > 0 ? Math.round((+s.salario * fatorEncargos() + custoBen(+s.salario, DIAS_MES_5).total) / 10) * 10 : '';
 }
 function custoTexto(s) {
-  return +s.salario > 0
-    ? `Equivale a um salário de cerca de <b>${brl0.format(+s.salario)}</b> com os encargos do ${esc(REGIMES[state.config.regime]?.label || 'regime escolhido')}. Para separar salário, encargos e benefícios, use "Custos" nos ajustes detalhados.`
-    : `Salário, encargos e benefícios somados, por mês. Ex.: salário de ${brl0.format(2000)} no Simples custa cerca de ${brl0.format(2000 * fatorEncargos())}.`;
+  return +s.salario > 0 ? `Custo de ${brl0.format(+custoMedioDe(s))} ≈ salário de ${brl0.format(+s.salario)} + encargos.` : '';
 }
 function inferenciaTexto(s) {
-  if (!(+s.func > 0) || !state.loja.dias.some(Boolean)) return 'Sem cadastro: nada sai do seu aparelho.';
-  return `${s.minimoManual ? 'Você informou' : 'Com essa equipe na escala 6x1, cabem'} <b>${plural(+s.minimo || 1, 'pessoa', 'pessoas')} trabalhando ao mesmo tempo</b>. <button type="button" class="link" data-act="bloco" data-k="setor">Mudar</button>`;
+  if (!(+s.func > 0)) return '';
+  return s.minimoManual ? '<button type="button" class="link" data-act="rqEstimar">Usar a estimativa</button>' : '"Ao mesmo tempo" estimado pela equipe de hoje.';
 }
 // Preenche tudo a partir de um modelo pronto (ou começa do zero); a simulação anterior pode ser recuperada
 function aplicarModelo(k) {
@@ -1966,14 +1983,16 @@ function onField(e) {
   if (p === 'custoMedio' && el.dataset.s) {
     root.salario = +v > 0 ? salarioDoCusto(v) : '';
     if (!root.nome) root.nome = 'Equipe';
-    const ct = document.getElementById('rqCusto'); if (ct) ct.innerHTML = custoTexto(root);
+    const ct = document.getElementById('rqCusto'); if (ct) ct.textContent = custoTexto(root);
   }
   if (p === 'salario' && el.dataset.s) root.custoMedio = '';
-  if (p === 'func' && modo === 'rapido' && root === state.setores[0]) {
-    if (!root.nome) root.nome = 'Equipe';
+  if (modo === 'rapido' && ((p === 'func' && root === state.setores[0]) || p === 'loja.ini' || p === 'loja.fim')) {
+    const s0 = setorRapido();
     atualizaInferencia();
-    const inf = document.getElementById('rqInfer'); if (inf) inf.innerHTML = inferenciaTexto(root);
+    const mi = document.getElementById('rq-min'); if (mi && document.activeElement !== mi) mi.value = s0.minimo;
+    const inf = document.getElementById('rqInfer'); if (inf) inf.innerHTML = inferenciaTexto(s0);
   }
+  if (p === 'minimo' && modo === 'rapido') { const inf = document.getElementById('rqInfer'); if (inf) inf.innerHTML = inferenciaTexto(root); }
   if (el.dataset.re) {
     // Mudança de estrutura (seleção, caixa de marcar): redesenha já e mantém o foco no campo
     const fid = el.id;
@@ -2144,31 +2163,50 @@ document.addEventListener('click', (e) => {
   }
   if (act === 'modo') {
     modo = modo === 'completo' ? 'passo' : 'completo';
-    try { localStorage.setItem(MODO, modo); } catch (err) { /* sem armazenamento */ }
+    try { localStorage.setItem(MODO, modo); localStorage.setItem('escala5x2:modoDet', modo); } catch (err) { /* sem armazenamento */ }
     aplicarModo(); renderResults();
     b.focus();
     return;
   }
-  if (act === 'rapido') {
-    modo = 'rapido';
+  if (act === 'setModo') {
+    // Rápido ⇄ Detalhado: os dados são os mesmos; o detalhado volta ao último formato usado (página ou etapas)
+    let ult = 'completo';
+    try { ult = localStorage.getItem('escala5x2:modoDet') || 'completo'; } catch (err) { /* sem armazenamento */ }
+    modo = b.dataset.v === 'rapido' ? 'rapido' : ult;
     try { localStorage.setItem(MODO, modo); } catch (err) { /* sem armazenamento */ }
     aplicarModo(); renderForms(); renderResults();
-    document.getElementById('modoBtn').focus();
+    window.scrollTo({ top: 0 });
+    document.getElementById(b.dataset.v === 'rapido' ? 'modoRapido' : 'modoDet').focus();
     return;
   }
   if (act === 'modelo') { aplicarModelo(b.dataset.k); return; }
   if (act === 'rqDias' || act === 'rqHora') {
     const L = state.loja;
-    if (act === 'rqDias') L.dias = DIAS_PRONTOS[b.dataset.k].dias.map(Boolean);
-    else { const h = HORAS_PRONTAS[b.dataset.k]; L.ini = h.ini; L.fim = h.fim; L.porDia = false; }
+    if (act === 'rqDias') { L.dias = DIAS_PRONTOS[b.dataset.k].dias.map(Boolean); ui.rqDias = false; }
+    else { const h = HORAS_PRONTAS[b.dataset.k]; L.ini = h.ini; L.fim = h.fim; L.porDia = false; ui.rqHora = false; }
     setorRapido(); atualizaInferencia();
     save(); renderForms(); renderResults();
     document.querySelector(`[data-act="${act}"][data-k="${b.dataset.k}"]`)?.focus();
     return;
   }
   if (act === 'rqOutro') {
-    ui.bloco.func = true; renderForms();
-    (b.dataset.k === 'hora' ? document.getElementById('loja-ini') : document.querySelector('#loja [data-act="dia"]'))?.focus();
+    if (b.dataset.k === 'hora') ui.rqHora = true; else ui.rqDias = true;
+    renderForms();
+    (b.dataset.k === 'hora' ? document.getElementById('rq-ini') : document.querySelector('[data-act="rqDia"]'))?.focus();
+    return;
+  }
+  if (act === 'rqDia') {
+    const i = +b.dataset.i;
+    state.loja.dias[i] = !state.loja.dias[i];
+    setorRapido(); atualizaInferencia();
+    save(); renderForms(); renderResults();
+    document.querySelector(`[data-act="rqDia"][data-i="${i}"]`)?.focus();
+    return;
+  }
+  if (act === 'rqEstimar') {
+    const s = setorRapido(); s.minimoManual = false; atualizaInferencia();
+    save(); renderForms(); renderResults();
+    document.getElementById('rq-min')?.focus();
     return;
   }
   if (act === 'bloco') {
@@ -2758,9 +2796,8 @@ function renderResultsSeguro() {
   if (ok.length) secoes += `<section class="sec" id="sec-comp"><div class="sec-head"><h3>Compartilhar com o contador</h3></div>${compartilharHTML()}</section>`;
   if (ok.length && !so) secoes += `<section class="sec" id="sec-cen"><div class="sec-head"><h3>Comparar cenários</h3></div>${cenariosHTML(c)}</section>`;
   const mais = secoes ? `<section class="sec mais"><div class="sec-head"><h3>Mais análises</h3></div>
-    <p class="hint">${so ? 'Compartilhar com o contador.' : 'Linha do tempo, antes e depois, alternativas à contratação, compartilhar e comparar cenários.'}</p>
-    ${maisBtn('mais', 'Ver mais análises')}${ui.det.mais ? `<div class="detail mais-det">${secoes}</div>` : ''}</section>` : '';
-  out.innerHTML = tiles + msg + premissas + (ok.length ? '<p class="hint">Próximo passo: <button type="button" class="link" data-act="pdf">salve o resultado em PDF</button> e mostre ao seu contador.</p>' : '') + `<div class="sec-head" id="sec-setores"><h3>Por setor</h3></div>` + filled.map((r) => setorResHTML(r, c)).join('') + mais;
+    ${maisBtn('mais', so ? 'Compartilhar com o contador' : 'Ver linha do tempo, alternativas e cenários')}${ui.det.mais ? `<div class="detail mais-det">${secoes}</div>` : ''}</section>` : '';
+  out.innerHTML = tiles + msg + premissas + '' + `<div class="sec-head" id="sec-setores"><h3>Por setor</h3></div>` + filled.map((r) => setorResHTML(r, c)).join('') + mais;
   renderTurnos(c);
 }
 
@@ -2798,7 +2835,7 @@ function opcoesEscalaHTML(ok) {
   const altaHTML = `<div class="opt"><span class="opt-t" id="opt-alta">Dias de alta demanda</span>
       <div class="dias dias-alta" role="group" aria-labelledby="opt-alta">${DIAS.map((d, i) => abertos[i]
         ? `<button type="button" class="dia" data-act="alta" data-i="${i}" aria-pressed="${alta[i]}" aria-label="${DIAS_LONGO[i]}">${d}</button>` : '').join('')}</div></div>
-    <p class="hint">Marque os dias mais movimentados, como sexta ou sábado: a escala dá o menor número possível de folgas neles, para ter mais gente trabalhando sem contratar.${alta[DOM] ? ' Com o domingo marcado, a folga no domingo deixa de ser priorizada; confira a regra de folga no domingo da sua categoria.' : ''}</p>`;
+    <p class="hint">Dias marcados recebem o menor número de folgas.${alta[DOM] ? ' Com o domingo marcado, a folga no domingo deixa de ser priorizada; confira a regra de folga no domingo da sua categoria.' : ''}</p>`;
   return `<div class="opts">
     ${mostraEq ? grupo('Horas entre a equipe', 'equilibrar', eq, 'Equilibrar horas', 'Não equilibrar') : ''}
     ${mostraSeg ? grupo('Folgas', 'seguidas', seg, 'Preferir dias seguidos', 'Não preferir') : ''}
@@ -2815,7 +2852,7 @@ function renderTurnos(c) {
   const r = ok.find((x) => x.s.id === ui.setorEx);
   const abas = ok.length > 1 ? `<div class="weeks setor-tabs" role="group" aria-label="Setor">${ok.map((x) =>
     `<button type="button" data-act="setorEx" data-sid="${x.s.id}" aria-pressed="${x.s.id === r.s.id}">${esc(x.s.nome || 'Setor sem nome')}</button>`).join('')}</div>` : '';
-  el.innerHTML = `<div class="msg warn"><b>É só um exemplo, não uma recomendação.</b> ${r.plantao ? 'Mostra plantões de 12h em dias alternados (12x36): cada pessoa trabalha 12h e descansa 36h, alternando semanas de 4 e de 3 plantões. A coluna Média mostra as horas trabalhadas por semana, já sem o intervalo.' : `Mostra uma forma de distribuir turnos e folgas que cumpre a jornada de ${nomeJornada(r.s)} e as 2 folgas por semana, com uma delas no domingo sempre que possível, em rodízio.`} Ajuste conforme a rotina da empresa, as preferências da equipe e a convenção coletiva. A escala é montada automaticamente, por um método aproximado: segue as regras principais, mas pode não ser a melhor distribuição para a sua equipe. No comércio, confira se cada pessoa folga no domingo pelo menos 1 vez a cada 3 semanas.${state.config.ferias ? ' Mostra semanas sem ninguém de férias; as pessoas a mais cobrem as férias ao longo do ano.' : ''}</div>
+  el.innerHTML = `<div class="msg warn"><b>Exemplo, não recomendação.</b> Montado automaticamente; ajuste à rotina da equipe. <details class="saiba-in"><summary>Saiba mais</summary>${r.plantao ? 'Mostra plantões de 12h em dias alternados (12x36): cada pessoa trabalha 12h e descansa 36h, alternando semanas de 4 e de 3 plantões. A coluna Média mostra as horas trabalhadas por semana, já sem o intervalo.' : `Mostra uma forma de distribuir turnos e folgas que cumpre a jornada de ${nomeJornada(r.s)} e as 2 folgas por semana, com uma delas no domingo sempre que possível, em rodízio.`} Ajuste conforme a rotina da empresa, as preferências da equipe e a convenção coletiva. A escala é montada automaticamente, por um método aproximado: segue as regras principais, mas pode não ser a melhor distribuição para a sua equipe. No comércio, confira se cada pessoa folga no domingo pelo menos 1 vez a cada 3 semanas.${state.config.ferias ? ' Mostra semanas sem ninguém de férias; as pessoas a mais cobrem as férias ao longo do ano.' : ''}</details></div>
     ${abas}
     <h3>${esc(r.s.nome || 'Setor sem nome')}${r.hires ? ` <span class="badge warn">inclui ${plural(r.hires, 'contratação', 'contratações')}</span>` : ''}</h3>
     ${escalaHTML(r)}

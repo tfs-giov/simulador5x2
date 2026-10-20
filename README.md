@@ -22,11 +22,14 @@ Você informa os dias e o horário de funcionamento e os setores da empresa. O s
 
 ## Como usar
 
-1. **Marque quando a empresa abre:** dias (Seg a Sex, Seg a Sáb, Todos os dias, Ter a Sáb ou outros) e horário (08h às 18h, 08h às 22h, 24 horas ou outro).
-2. **Informe quantos funcionários tem hoje** e, se quiser o custo, o custo médio por funcionário (salário + encargos + benefícios, por mês). O simulador deduz o salário a partir desse custo.
-3. **Veja o resultado** na hora. O simulador deduz quantas pessoas a equipe mantém trabalhando ao mesmo tempo na escala 6x1 e calcula quantas faltam na 5x2. Se o número deduzido não for o real, use "Mudar".
+No topo há dois modos, **Rápido** e **Detalhado**. Os dados são os mesmos nos dois, então dá para começar no rápido e refinar no detalhado.
 
-Logo abaixo vêm o resultado e o exemplo de escala. Depois, em "Ajustes detalhados (opcional)", dias, horário, feriados, setores e custos ficam resumidos numa linha cada, com "Ajustar". As análises extras (linha do tempo, alternativas, cenários, compartilhar) ficam em "Mais análises". Quem quiser controle total (vários setores, turnos, pessoas por dia) usa "Ver todas as opções".
+**Rápido** (padrão): três perguntas e o resultado na hora.
+1. **Dias:** Seg a Sex, Seg a Sáb, Todos os dias, Ter a Sáb ou outros.
+2. **Horário:** 08h às 18h, 08h às 22h, 24 horas ou outro.
+3. **Equipe:** funcionários de hoje, quantos trabalham ao mesmo tempo (estimado a partir da equipe; dá para corrigir) e, se quiser o custo, o custo médio por funcionário (salário + encargos + benefícios).
+
+**Detalhado:** vários setores, turnos, pessoas por dia, feriados, encargos e benefícios, numa página só ou uma etapa por vez.
 
 ### O que calcular
 
