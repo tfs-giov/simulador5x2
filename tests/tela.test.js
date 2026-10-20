@@ -100,6 +100,8 @@ test('cenários: guardar, recarregar, abrir e voltar à simulação anterior', a
   await p.fill('#cenNome', 'Sem domingo');
   await p.click('[data-act="cenSalvar"]');
   assert.deepEqual(await p.$$eval('table.cen thead th', (t) => t.map((x) => x.textContent)), ['', 'Atual', 'Sete dias', 'Sem domingo']);
+  // Espera os cenários chegarem ao localStorage antes de recarregar
+  await p.waitForFunction(() => JSON.parse(localStorage.getItem('escala5x2:cenarios') || '[]').length === 2);
   await p.reload();
   assert.deepEqual(await p.evaluate(() => cenarios.map((c) => c.nome)), ['Sete dias', 'Sem domingo']);
   await abreMais(p);
@@ -273,10 +275,11 @@ test('escala: dia fechado aparece como folga; semanas iguais não viram abas', a
   await p.fill('#rq-func', '3');
   await p.waitForSelector('#turnos table.sched');
   const linhas = await p.$$eval('#turnos table.sched tbody tr:not(.grp)', (trs) => trs.map((tr) =>
-    [tr.querySelectorAll('td.t').length, tr.querySelectorAll('td.fx').length, tr.querySelectorAll('td.x').length]));
+    [tr.querySelectorAll('td.t').length, tr.querySelectorAll('td.f').length, tr.querySelectorAll('td.x').length]));
   assert.ok(linhas.length > 0);
-  for (const l of linhas) assert.deepEqual(l, [5, 2, 0], 'seg a sex trabalhando, sáb e dom de folga (fechado)');
-  assert.match(await p.$eval('#turnos table.sched td.fx', (e) => e.innerText), /Folga\s*fechado/);
+  for (const l of linhas) assert.deepEqual(l, [5, 2, 0], 'seg a sex trabalhando, sáb e dom de folga');
+  assert.deepEqual(await p.$$eval('#turnos table.sched td.f', (tds) => [...new Set(tds.map((e) => e.innerText.trim()))]), ['Folga'], 'célula diz só "Folga"');
+  assert.deepEqual(await p.$$eval('#turnos table.sched thead th small', (ths) => ths.map((e) => e.parentElement.firstChild.textContent)), ['Sáb', 'Dom'], '"fechado" só no cabeçalho');
   assert.match(await p.$eval('#turnos .weeks', (e) => e.innerText), /se repete toda semana/);
   assert.equal(await p.$('#turnos [data-act="week"]'), null, 'sem abas de semanas iguais');
   assert.deepEqual(erros, []);

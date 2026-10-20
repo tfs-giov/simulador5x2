@@ -266,14 +266,14 @@ test('detalhe do setor: tabela por turno, total e conta passo a passo', () => {
   assert.doesNotMatch(html, /tem <b>0<\/b> ·/);
 });
 
-test('escala com a empresa fechada no fim de semana: PDF e Excel mostram a folga', () => {
+test('escala com a empresa fechada no fim de semana: PDF e Excel marcam o dia fechado no cabeçalho', () => {
   const app = cenario({ ini: '08:00', fim: '18:00', dias: SEM.map((d) => d < 5), setor: { func: 3 } });
   const c = app.compute();
-  assert.match(app.montarPDF(c).output(), /Folga \\\(fechado\\\)/, 'no PDF os parênteses vêm escapados');
+  assert.match(app.montarPDF(c).output(), /\\\(fechado\\\)/, 'no PDF os parênteses vêm escapados');
   const X = require('xlsx');
   const wb = X.read(app.montarExcel(c));
   const csv = wb.SheetNames.map((n) => X.utils.sheet_to_csv(wb.Sheets[n])).join('\n');
-  assert.match(csv, /Folga \(fechado\)/);
+  assert.match(csv, /Sábado \(fechado\),Domingo \(fechado\)/);
   assert.doesNotMatch(csv, /,Fechado,/);
 });
 
