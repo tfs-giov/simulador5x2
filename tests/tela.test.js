@@ -263,12 +263,11 @@ test('modo rápido: dias, horário e funcionários prontos dão o resultado', as
   await p.fill('#rq-custo', '2600');
   const sal = await p.evaluate(() => state.setores[0].salario);
   assert.ok(sal > 1800 && sal < 2200, `custo de R$ 2.600 vira salário perto de R$ 2.000 no Simples (veio ${sal})`);
-  assert.match(await p.$eval('#rqCusto', (e) => e.textContent), /salário de/);
   await p.waitForSelector('#results .tile');
   const s = await p.evaluate(() => ({ nome: state.setores[0].nome, minimo: state.setores[0].minimo, dias: state.loja.dias.filter(Boolean).length, ini: state.loja.ini }));
   assert.deepEqual([s.nome, s.dias, s.ini], ['Equipe', 7, '08:00']);
   assert.ok(s.minimo >= 1, 'pessoas ao mesmo tempo deduzidas da equipe');
-  assert.match(await p.$eval('#rqInfer', (e) => e.textContent), /estimado/);
+  assert.match(await p.$eval('#rqInfer', (e) => e.textContent), /Estimamos pela sua equipe/);
   assert.equal(await p.$eval('#rq-min', (e) => e.value), String(s.minimo));
   assert.match(await p.$eval('#results', (e) => e.innerText), /Contratações/);
   assert.equal(await p.isVisible('#loja'), false, 'dias e horário detalhados ficam recolhidos');

@@ -1713,9 +1713,9 @@ function rapidoFormHTML() {
     : `<div class="rq-campos${so ? ' so' : ''}">
       <label class="f" for="rq-func"><span>Funcionários</span><input id="rq-func" type="number" min="1" step="1" inputmode="numeric" data-s="${s.id}" data-p="func" data-t="num" value="${esc(s.func)}" placeholder="Ex.: 8"></label>
       <label class="f" for="rq-min"><span>Ao mesmo tempo</span><input id="rq-min" type="number" min="1" step="1" inputmode="numeric" data-s="${s.id}" data-p="minimo" data-t="num" value="${esc(s.minimo)}" placeholder="Ex.: 2" aria-describedby="rqInfer"></label>
-      ${so ? '' : `<label class="f" for="rq-custo"><span>Custo por funcionário</span><span class="money"><input id="rq-custo" type="number" min="0" step="50" inputmode="decimal" data-s="${s.id}" data-p="custoMedio" data-t="num" value="${esc(custoMedioDe(s))}" placeholder="Opcional" aria-describedby="rqCusto"></span></label>`}
+      ${so ? '' : `<label class="f" for="rq-custo"><span>Custo por funcionário</span><span class="money"><input id="rq-custo" type="number" min="0" step="50" inputmode="decimal" data-s="${s.id}" data-p="custoMedio" data-t="num" value="${esc(custoMedioDe(s))}" placeholder="Opcional"></span></label>`}
     </div>
-    <p class="hint rq-nota"><span id="rqInfer">${inferenciaTexto(s)}</span>${so ? '' : ` <span id="rqCusto">${custoTexto(s)}</span>`}</p>`;
+    <p class="hint rq-nota" id="rqInfer">${inferenciaTexto(s)}</p>`;
   return `<div class="rq"><span class="rq-t" id="rq-dias"><span class="rq-n">1</span>Dias</span><div class="chips" role="group" aria-labelledby="rq-dias">${Object.entries(DIAS_PRONTOS).map(([k, d]) => chip('rqDias', k, d.nome, !ui.rqDias && diasOn === k)).join('')}${chip('rqOutro', 'dias', 'Outros', outrosDias)}</div>${diasMini}</div>
     <div class="rq"><span class="rq-t" id="rq-hora"><span class="rq-n">2</span>Horário</span><div class="chips" role="group" aria-labelledby="rq-hora">${Object.entries(HORAS_PRONTAS).map(([k, h]) => chip('rqHora', k, h.nome, !ui.rqHora && horaOn === k)).join('')}${chip('rqOutro', 'hora', 'Outro', outraHora)}</div>${horaLivre}</div>
     <div class="rq"><span class="rq-t"><span class="rq-n">3</span>Equipe</span>${equipe}</div>
@@ -1737,8 +1737,11 @@ function custoTexto(s) {
   return +s.salario > 0 ? `Custo de ${brl0.format(+custoMedioDe(s))} ≈ salário de ${brl0.format(+s.salario)} + encargos.` : '';
 }
 function inferenciaTexto(s) {
-  if (!(+s.func > 0)) return '';
-  return s.minimoManual ? '<button type="button" class="link" data-act="rqEstimar">Usar a estimativa</button>' : '"Ao mesmo tempo" estimado pela equipe de hoje.';
+  const def = '<b>Ao mesmo tempo</b> é quantas pessoas precisam estar trabalhando juntas em qualquer horário (ex.: 2 no caixa).';
+  if (!(+s.func > 0)) return def;
+  return s.minimoManual
+    ? `${def} <button type="button" class="link" data-act="rqEstimar">Usar a estimativa</button>`
+    : `${def} Estimamos pela sua equipe de hoje; corrija se precisar.`;
 }
 // Preenche tudo a partir de um modelo pronto (ou começa do zero); a simulação anterior pode ser recuperada
 function aplicarModelo(k) {
