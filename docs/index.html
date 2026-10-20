@@ -207,6 +207,19 @@ h4 { margin: 0; font-size: 0.9375rem; color: var(--title); }
 .prem-line p { margin: 0; }
 .fer-q { border-top: 0; margin-top: 16px; }
 .modo-calc { margin: 0 0 12px; }
+.rapido-form { display: none; }
+body.rapido .rapido-form { display: grid; gap: 14px; }
+#rapidoForm { display: grid; gap: 16px; }
+.rapido-form h2 { margin: 0; }
+.rq { display: grid; gap: 6px; }
+.rq-t { font-weight: 700; color: var(--title); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-weight: 600; min-height: 40px; }
+.chip[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); }
+.rq-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 220px)); gap: 12px; }
+@media (max-width: 420px) { .rq-campos { grid-template-columns: 1fr 1fr; } }
+body.rapido .rapido-form .modo-calc { margin: 0; }
+body.rapido:not(.setor-aberto) [data-recolhe="setor"] > :not(.step-head):not(.resumo-linha) { display: none !important; }
 details.saiba-in { display: inline; }
 details.saiba-in > summary { display: inline; cursor: pointer; color: var(--primary); font-weight: 600; }
 details.saiba-in[open] { display: block; margin-top: 6px; }
@@ -507,7 +520,7 @@ footer b { color: var(--ink); }
     </div>
     <section class="intro" data-step="1">
       <h1>Fim da escala 6x1: quantas pessoas contratar e quanto custa</h1>
-      <p class="sub">Escolha seu tipo de negócio e veja o resultado na hora.</p>
+      <p class="sub">Marque quando a empresa abre e quantos funcionários tem. O resultado sai na hora.</p>
       <ul class="selos"><li>Grátis, sem cadastro</li><li>Nada sai do seu aparelho</li><li>Não oficial</li></ul>
       <details class="saiba"><summary>O que muda com a Emenda Constitucional 141/2026</summary>
       <p>Na escala 6x1, cada pessoa trabalha 6 dias e folga 1, com até 44 horas por semana. A Emenda Constitucional 141/2026 acaba com essa escala: o limite cai para 42 horas semanais em 15/12/2026, já com 2 folgas por semana, e para 40 horas em dezembro de 2027, sem redução de salário. Na prática, passa a valer a escala 5x2: 5 dias de trabalho e 2 de folga.</p>
@@ -521,10 +534,9 @@ footer b { color: var(--ink); }
       </details>
     </section>
 
-    <section class="card modelos" aria-labelledby="hMod" data-step="1">
-      <h2 id="hMod">Qual é o seu negócio?</h2>
-      <p class="hint">O modelo preenche horários, setores e salários típicos. Depois é só ajustar.</p>
-      <div id="modelosGrid" class="modelos-grid" role="group" aria-labelledby="hMod"></div>
+    <section class="card rapido-form" aria-labelledby="hRap" data-step="1">
+      <h2 id="hRap">Sua empresa</h2>
+      <div id="rapidoForm"></div>
     </section>
 
     <section class="card" aria-labelledby="h1s" data-step="1" data-recolhe="func">
@@ -538,8 +550,9 @@ footer b { color: var(--ink); }
       </details>
     </section>
 
-    <section class="card" aria-labelledby="h2s" data-step="2">
+    <section class="card" aria-labelledby="h2s" data-step="2" data-recolhe="setor">
       <div class="step-head"><span class="num-badge">2</span><h2 id="h2s">Setores</h2></div>
+      <div class="resumo-linha" id="resumoSetor"></div>
       <div id="modoCalc"></div>
       <p class="hint">Um setor por função. Conte só empregados, sem donos e sócios.</p>
       <div id="avisoModelo"></div>
@@ -1606,6 +1619,74 @@ function feriadoPerguntaHTML() {
     <p class="hint">Quem trabalha no feriado ganha outra folga ou recebe em dobro.</p>
     <details class="saiba"><summary>Saiba mais</summary><p class="hint">Lei 605/1949, art. 9º. A folga extra pode exigir mais contratações; o pagamento em dobro aumenta o custo da folha. No comércio, abrir em feriado exige autorização na convenção coletiva e respeito à lei do município (Lei 10.101/2000, art. 6º-A). Sem resposta, o cálculo considera que a empresa fecha.</p></details></div>`;
 }
+// ---------- Modo rápido: escolhas prontas de dias e horário + número de funcionários ----------
+const DIAS_PRONTOS = {
+  segsex: { nome: 'Seg a Sex', dias: [1, 1, 1, 1, 1, 0, 0] },
+  segsab: { nome: 'Seg a Sáb', dias: [1, 1, 1, 1, 1, 1, 0] },
+  segdom: { nome: 'Todos os dias', dias: [1, 1, 1, 1, 1, 1, 1] },
+  tersab: { nome: 'Ter a Sáb', dias: [0, 1, 1, 1, 1, 1, 0] }
+};
+const HORAS_PRONTAS = {
+  h0818: { nome: '08h às 18h', ini: '08:00', fim: '18:00' },
+  h0919: { nome: '09h às 19h', ini: '09:00', fim: '19:00' },
+  h0822: { nome: '08h às 22h', ini: '08:00', fim: '22:00' },
+  h0622: { nome: '06h às 22h', ini: '06:00', fim: '22:00' },
+  h24: { nome: '24 horas', ini: '00:00', fim: '00:00' }
+};
+// Garante o setor único do modo rápido
+function setorRapido() {
+  if (!state.setores.length) state.setores.push(novoSetor());
+  const s = state.setores[0];
+  if (!s.nome) s.nome = 'Equipe';
+  return s;
+}
+// Quantas pessoas a equipe de hoje consegue manter trabalhando ao mesmo tempo na 6x1 (44h, 6 dias):
+// o maior número cuja necessidade na regra atual cabe nos funcionários informados
+function inferirMinimo(s) {
+  const f = Math.floor(+s.func || 0);
+  if (!f || !state.loja.dias.some(Boolean)) return s.minimo || '';
+  let melhor = 1;
+  for (let m = 1; m <= 80; m++) {
+    const r = analisar({ ...s, minimo: m, porDiaMin: false, porTurnoMin: false }, 44, 6);
+    if (r.erros.length || r.need > f) break;
+    melhor = m;
+  }
+  return melhor;
+}
+function atualizaInferencia() {
+  if (modo !== 'rapido' || !state.setores.length) return;
+  const s = state.setores[0];
+  if (!s.minimoManual && +s.func > 0) s.minimo = inferirMinimo(s);
+}
+// Resumo de uma linha dos setores (modo rápido); atualizado também a cada digitação, junto com o resultado
+function atualizaResumoSetor() {
+  const el = document.getElementById('resumoSetor');
+  if (!el) return;
+  const preench = state.setores.filter((x) => !setorVazio(x));
+  el.innerHTML = `<span>${preench.length ? preench.map((x) => `${esc(x.nome || 'Setor')}: ${plural(+x.func || 0, 'funcionário', 'funcionários')}, ${+x.minimo || 0} ao mesmo tempo`).join(' · ') : 'Nenhum setor ainda.'}</span><button type="button" class="link" data-act="bloco" data-k="setor" aria-expanded="${!!ui.bloco.setor}">${ui.bloco.setor ? 'Fechar' : 'Ajustar'}</button>`;
+}
+function rapidoFormHTML() {
+  const L = state.loja, varios = state.setores.filter((x) => !setorVazio(x)).length > 1;
+  const igual = (a, b) => a.every((v, i) => !!v === !!b[i]);
+  const chip = (act, k, nome, on) => `<button type="button" class="chip" data-act="${act}" data-k="${k}" aria-pressed="${on}">${nome}</button>`;
+  const diasOn = Object.entries(DIAS_PRONTOS).find(([, d]) => igual(d.dias, L.dias))?.[0];
+  const horaOn = !L.porDia && Object.entries(HORAS_PRONTAS).find(([, h]) => h.ini === L.ini && h.fim === L.fim)?.[0];
+  const outrosDias = L.dias.some(Boolean) && !diasOn, outraHora = L.ini && L.fim && !horaOn;
+  const s = state.setores[0] || novoSetor();
+  const so = soEscala();
+  return `<div class="rq"><span class="rq-t" id="rq-dias">Abre</span><div class="chips" role="group" aria-labelledby="rq-dias">${Object.entries(DIAS_PRONTOS).map(([k, d]) => chip('rqDias', k, d.nome, diasOn === k)).join('')}${chip('rqOutro', 'dias', 'Outros dias', outrosDias)}</div></div>
+    <div class="rq"><span class="rq-t" id="rq-hora">Horário</span><div class="chips" role="group" aria-labelledby="rq-hora">${Object.entries(HORAS_PRONTAS).map(([k, h]) => chip('rqHora', k, h.nome, horaOn === k)).join('')}${chip('rqOutro', 'hora', outraHora ? `${esc(L.ini)} às ${esc(L.fim)}` : 'Outro horário', !!outraHora)}</div></div>
+    ${varios ? `<p class="hint">Esta simulação tem vários setores: ajuste os funcionários em "Setores", abaixo.</p>` : `<div class="rq-campos">
+      <label class="f" for="rq-func"><span>Funcionários hoje</span><input id="rq-func" type="number" min="1" step="1" inputmode="numeric" data-s="${s.id}" data-p="func" data-t="num" value="${esc(s.func)}" placeholder="Ex.: 8"></label>
+      ${so ? '' : `<label class="f" for="rq-sal"><span>Salário médio <small>(opcional)</small></span><span class="money"><input id="rq-sal" type="number" min="0" step="50" inputmode="decimal" data-s="${s.id}" data-p="salario" data-t="num" value="${esc(s.salario)}" placeholder="2.000"></span></label>`}
+    </div>
+    <p class="hint" id="rqInfer">${inferenciaTexto(s)}</p>`}
+    <div id="modoCalcR"></div>`;
+}
+function inferenciaTexto(s) {
+  if (!(+s.func > 0) || !state.loja.dias.some(Boolean)) return 'Sem cadastro: nada sai do seu aparelho.';
+  return `${s.minimoManual ? 'Você informou' : 'Com essa equipe na escala 6x1, cabem'} <b>${plural(+s.minimo || 1, 'pessoa', 'pessoas')} trabalhando ao mesmo tempo</b>. <button type="button" class="link" data-act="bloco" data-k="setor">Mudar</button>`;
+}
 // Preenche tudo a partir de um modelo pronto (ou começa do zero); a simulação anterior pode ser recuperada
 function aplicarModelo(k) {
   const anterior = JSON.parse(JSON.stringify(state));
@@ -1772,11 +1853,9 @@ function renderForms() {
   const so = soEscala();
   document.body.classList.toggle('so-escala', so);
   // Modelos prontos
-  const mk = state.config.modelo;
-  document.getElementById('modelosGrid').innerHTML = Object.entries(MODELOS).map(([k, m]) =>
-    `<button type="button" class="modelo" data-act="modelo" data-k="${k}" aria-pressed="${mk === k}"><span aria-hidden="true">${m.icone}</span>${m.nome}</button>`).join('')
-    + `<button type="button" class="modelo" data-act="modelo" data-k="zero" aria-pressed="${mk === 'zero'}"><span aria-hidden="true">✏️</span>Outro (do zero)</button>`;
-  document.getElementById('avisoModelo').innerHTML = MODELOS[mk] ? `<p class="aviso-modelo">O modelo estimou a equipe de hoje: confira o número de <b>funcionários</b> de cada setor.</p>` : '';
+  document.getElementById('rapidoForm').innerHTML = rapidoFormHTML();
+  atualizaResumoSetor();
+  document.body.classList.toggle('setor-aberto', !!ui.bloco.setor);
   // Blocos recolhidos no modo rápido, com um resumo de uma linha
   const semDias = !state.loja.dias.some(Boolean);
   const abreFunc = ui.bloco.func || semDias, abreCusto = !!ui.bloco.custo;
@@ -1787,9 +1866,11 @@ function renderForms() {
   const ben = custoBen(2000, DIAS_MES_5);
   document.getElementById('resumoCusto').innerHTML = `<span>${esc(REGIMES[state.config.regime]?.label || 'Personalizado')} · encargos de ${pct1.format(+state.config.encargos || 0)}% · ${ben.total > 0.5 ? 'com benefícios' : 'sem benefícios'}</span><button type="button" class="link" data-act="bloco" data-k="custo" aria-expanded="${abreCusto}">${abreCusto ? 'Fechar' : 'Ajustar'}</button>`;
   document.body.classList.toggle('jor-mostra', !!ui.jorMostra || state.setores.some((s) => (s.jornada || '8') !== '8'));
-  document.getElementById('modoCalc').innerHTML = `<div class="opts fer-q modo-calc"><div class="opt"><span class="opt-t" id="q-modo">Calcular</span>
-    <div class="seg" role="group" aria-labelledby="q-modo"><button type="button" data-act="soEscala" data-v="nao" aria-pressed="${!so}">Escala e custos</button><button type="button" data-act="soEscala" data-v="sim" aria-pressed="${so}">Só a escala</button></div></div>
+  const calcHTML = (sfx) => `<div class="opts fer-q modo-calc"><div class="opt"><span class="opt-t" id="q-modo${sfx}">Calcular</span>
+    <div class="seg" role="group" aria-labelledby="q-modo${sfx}"><button type="button" data-act="soEscala" data-v="nao" aria-pressed="${!so}">Escala e custos</button><button type="button" data-act="soEscala" data-v="sim" aria-pressed="${so}">Só a escala</button></div></div>
     </div>`;
+  document.getElementById('modoCalc').innerHTML = calcHTML('');
+  const mcr = document.getElementById('modoCalcR'); if (mcr) mcr.innerHTML = calcHTML('-r');
   document.getElementById('setores').innerHTML = state.setores.map(setorHTML).join('') || '<p class="hint">Nenhum setor. Adicione o primeiro.</p>';
   document.getElementById('custos').innerHTML = custosHTML();
   const adv = document.getElementById('adv');
@@ -1855,6 +1936,12 @@ function onField(e) {
   save();
   ui.codigo = ''; // o código gerado antes não vale mais
   if (p === 'func' && el.dataset.s) ui.funcOk[el.dataset.s] = true;
+  if (p === 'minimo' && el.dataset.s) root.minimoManual = true;
+  if (p === 'func' && modo === 'rapido' && root === state.setores[0]) {
+    if (!root.nome) root.nome = 'Equipe';
+    atualizaInferencia();
+    const inf = document.getElementById('rqInfer'); if (inf) inf.innerHTML = inferenciaTexto(root);
+  }
   if (el.dataset.re) {
     // Mudança de estrutura (seleção, caixa de marcar): redesenha já e mantém o foco no campo
     const fid = el.id;
@@ -2038,6 +2125,20 @@ document.addEventListener('click', (e) => {
     return;
   }
   if (act === 'modelo') { aplicarModelo(b.dataset.k); return; }
+  if (act === 'rqDias' || act === 'rqHora') {
+    const L = state.loja;
+    if (act === 'rqDias') L.dias = DIAS_PRONTOS[b.dataset.k].dias.map(Boolean);
+    else { const h = HORAS_PRONTAS[b.dataset.k]; L.ini = h.ini; L.fim = h.fim; L.porDia = false; }
+    setorRapido(); atualizaInferencia();
+    save(); renderForms(); renderResults();
+    document.querySelector(`[data-act="${act}"][data-k="${b.dataset.k}"]`)?.focus();
+    return;
+  }
+  if (act === 'rqOutro') {
+    ui.bloco.func = true; renderForms();
+    (b.dataset.k === 'hora' ? document.getElementById('loja-ini') : document.querySelector('#loja [data-act="dia"]'))?.focus();
+    return;
+  }
   if (act === 'bloco') {
     const k = b.dataset.k;
     ui.bloco[k] = !ui.bloco[k];
@@ -2545,6 +2646,7 @@ function renderResults() {
   }
 }
 function renderResultsSeguro() {
+  atualizaResumoSetor();
   const c = compute();
   const out = document.getElementById('results');
   renderBenSum(c);
@@ -2591,7 +2693,7 @@ function renderResultsSeguro() {
   else if (c.hires) msg = `<div class="msg info">Mesmo reorganizando turnos e folgas, ${c.hires === 1 ? 'falta' : 'faltam'} <b>${plural(c.hires, 'pessoa', 'pessoas')}</b> para cobrir o horário com 2 folgas por semana.</div>`;
   if (c.semSalario && !so) msg += '<div class="msg warn">Falta o salário médio de algum setor que precisa contratar, então o custo extra mostrado fica abaixo do real. Informe o salário na etapa 2.</div>';
   const semFeriado = !['fecha', 'folga', 'dobro'].includes(state.config.feriadoModo);
-  if (semFeriado) msg += '<div class="msg warn">Você não informou se a empresa abre em feriados (etapa 1). Por enquanto, o cálculo considera que fecha.</div>';
+  if (semFeriado && modo !== 'rapido') msg += '<div class="msg warn">Você não informou se a empresa abre em feriados (etapa 1). Por enquanto, o cálculo considera que fecha.</div>';
   const txtFer = semFeriado ? 'não informado' : { fecha: 'empresa fecha', folga: 'abre com folga extra', dobro: 'abre e paga em dobro' }[mf];
   const premissas = `<section class="prem" aria-label="O que o cálculo considera">
     <div class="prem-line"><p><b>O cálculo considera:</b> férias ${fer ? 'com cobertura (30 dias por pessoa por ano)' : 'sem cobertura (o número de contratações sai menor que o real)'} · feriados: ${txtFer} (${feriadosAno()} por ano)</p>

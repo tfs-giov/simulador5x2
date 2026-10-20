@@ -235,7 +235,7 @@ test('primeira visita: aviso com não oficial, dados locais e contato; não volt
 
 test('só a escala: sem salário, sem valores em reais no resultado', async () => {
   const { p, ctx, erros } = await abrir('computador');
-  await p.click('[data-act="soEscala"][data-v="sim"]');
+  await p.click('#modoCalc [data-act="soEscala"][data-v="sim"]');
   for (const i of [0, 1, 2, 3, 4, 5, 6]) await p.click(`#loja [data-act="dia"][data-i="${i}"]`);
   await p.fill('#loja-ini', '08:00'); await p.fill('#loja-fim', '20:00');
   const sid = await p.$eval('.setor input[data-p="nome"]', (e) => e.dataset.s);
@@ -250,23 +250,34 @@ test('só a escala: sem salário, sem valores em reais no resultado', async () =
   await ctx.close();
 });
 
-test('modo rápido: um modelo pronto mostra o resultado em um clique', async () => {
+test('modo rápido: dias, horário e funcionários prontos dão o resultado', async () => {
   const ctx = await navegador.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
   const p = await ctx.newPage();
   const erros = []; p.on('pageerror', (e) => erros.push(e.message));
   await p.addInitScript(() => localStorage.setItem('escala5x2:aviso', '1'));
   await p.goto('file://' + pagina);
   assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), true, 'modo rápido é o padrão');
-  await p.click('[data-act="modelo"][data-k="padaria"]');
+  await p.click('[data-act="rqDias"][data-k="segdom"]');
+  await p.click('[data-act="rqHora"][data-k="h0822"]');
+  await p.fill('#rq-func', '8');
+  await p.fill('#rq-sal', '2000');
   await p.waitForSelector('#results .tile');
+  const s = await p.evaluate(() => ({ nome: state.setores[0].nome, minimo: state.setores[0].minimo, dias: state.loja.dias.filter(Boolean).length, ini: state.loja.ini }));
+  assert.deepEqual([s.nome, s.dias, s.ini], ['Equipe', 7, '08:00']);
+  assert.ok(s.minimo >= 1, 'pessoas ao mesmo tempo deduzidas da equipe');
+  assert.match(await p.$eval('#rqInfer', (e) => e.textContent), /ao mesmo tempo/);
   assert.match(await p.$eval('#results', (e) => e.innerText), /Contratações/);
-  assert.equal(await p.isVisible('#loja'), false, 'dias e horário recolhidos');
-  assert.ok(await p.$('input.conferir'), 'funcionários destacados para conferir');
+  assert.equal(await p.isVisible('#loja'), false, 'dias e horário detalhados ficam recolhidos');
   assert.equal(await rolagemLateral(p), 0);
-  await p.click('[data-act="bloco"][data-k="func"]');
-  assert.equal(await p.isVisible('#loja'), true, '"Ajustar" abre dias e horário');
+  // "Mudar" abre os setores para corrigir; corrigir fixa o número
+  await p.click('#rqInfer [data-act="bloco"]');
+  const sid = await p.evaluate(() => state.setores[0].id);
+  await p.fill(`#${sid}-m`, '3');
+  await p.fill('#rq-func', '9');
+  assert.equal(await p.evaluate(() => state.setores[0].minimo), 3, 'número informado à mão não é sobrescrito');
   await p.click('#modoBtn');
-  assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), false, '"Ver todas as opções" sai do modo rápido');
+  assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), false);
   assert.deepEqual(erros, []);
   await ctx.close();
 });
+
