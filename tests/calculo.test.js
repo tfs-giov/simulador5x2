@@ -229,7 +229,7 @@ test('salário de quem será contratado e combinações para a última vaga', ()
   for (const o of ops) assert.ok(Number.isFinite(o.custo));
 });
 
-test('só a escala: PDF e avisos sem valores em reais', () => {
+test('só a escala: PDF, Excel e avisos sem valores em reais', () => {
   const app = cenario({ ini: '14:00', fim: '23:30', setor: { func: 2 }, config: { soEscala: true, feriadoModo: 'dobro' } });
   const c = app.compute();
   assert.ok(c.res[0].avisos.length > 0);
@@ -238,4 +238,10 @@ test('só a escala: PDF e avisos sem valores em reais', () => {
   const texto = doc.output();
   assert.ok(!/R\$/.test(texto), 'PDF com valor em reais');
   assert.ok(/Contratar/.test(texto));
+  const X = require('xlsx');
+  const wb = X.read(app.montarExcel(c));
+  for (const nome of wb.SheetNames) {
+    const csv = X.utils.sheet_to_csv(wb.Sheets[nome]);
+    assert.ok(!/R\$|Custo/.test(csv), `aba ${nome} com custo`);
+  }
 });

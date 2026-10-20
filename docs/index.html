@@ -2782,6 +2782,7 @@ function descreverPessoas(r) {
 function montarExcel(c) {
   const X = window.XLSX;
   const wb = X.utils.book_new();
+  const so = soEscala(); // "Só a escala": planilha sem valores em reais
   const ok = c.res.filter((r) => !r.vazio && !r.erros.length && r.grupos.length);
   const hoje = new Date().toLocaleDateString('pt-BR');
   const resumo = [
@@ -2791,7 +2792,7 @@ function montarExcel(c) {
     [],
     ['Jornada semanal', `${c.H}h (regra final, a partir de dezembro de 2027)`],
     ...(() => { const tl = transicao(c); return [
-      ['Fase de 42h (a partir de 15/12/2026)', `${tl.acordo ? 'com acordo ou convenção coletiva para 8h24 por dia' : 'sem acordo ou convenção coletiva: na prática 40h'} · contratar ${tl.f1.hires} · custo extra ${brl.format(tl.f1.extra)}/mês`],
+      ['Fase de 42h (a partir de 15/12/2026)', `${tl.acordo ? 'com acordo ou convenção coletiva para 8h24 por dia' : 'sem acordo ou convenção coletiva: na prática 40h'} · contratar ${tl.f1.hires}${so ? '' : ` · custo extra ${brl.format(tl.f1.extra)}/mês`}`],
       ['Roteiro', tl.roteiro.replace(/<[^>]+>/g, '')]]; })(),
     ['Funcionamento', descreverHorario(state.loja)],
     ['Equilibrar horas', state.config.equilibrar ? 'Sim (rodízio)' : 'Não'],
@@ -2801,18 +2802,18 @@ function montarExcel(c) {
     ['Adicional noturno', `${pct1.format(adicNoturno())}% (entre ${atividade().faixa}${atividade().reduz ? ', hora de 52min30s' : ''})`],
     ['Feriados', `${feriadosAno()} por ano · ${!['fecha', 'folga', 'dobro'].includes(state.config.feriadoModo) ? 'não foi informado se a empresa abre (o cálculo considera que fecha)' : { fecha: 'empresa fecha', folga: 'abre com folga compensatória', dobro: `abre e paga em dobro (${multFeriado() === 2 ? 'além do dia já pago' : 'no total'})` }[modoFeriado()]}`],
     [],
-    ['Setor', 'Horário', 'Pessoas ao mesmo tempo', 'Precisa', 'Tem hoje', 'Contratar', 'Custo das contratações por mês (R$)', 'Adicional noturno por mês (R$)'],
+    ['Setor', 'Horário', 'Pessoas ao mesmo tempo', 'Precisa', 'Tem hoje', 'Contratar', ...(so ? [] : ['Custo das contratações por mês (R$)', 'Adicional noturno por mês (R$)'])],
     ...ok.map((r) => [r.s.nome || 'Setor sem nome', `${nomeJornada(r.s)} · ${r.s.horario === 'loja' ? 'horário da empresa' : descreverHorario(horarioDe(r.s))}`,
       r.varia ? descreverPessoas(r) : String(r.m),
-      r.need, r.cur, r.hires, Math.round(r.custo * 100) / 100, Math.round((r.noiteDepois || 0) * 100) / 100]),
+      r.need, r.cur, r.hires, ...(so ? [] : [Math.round(r.custo * 100) / 100, Math.round((r.noiteDepois || 0) * 100) / 100])]),
     [],
-    ['Total', '', '', '', '', c.hires, Math.round(c.contratacoes * 100) / 100, Math.round(ok.reduce((a, r) => a + (r.noiteDepois || 0), 0) * 100) / 100],
-    [`Custo extra por mês (contratações + aumento do adicional noturno${modoFeriado() === 'dobro' ? ' e dos feriados pagos em dobro' : ''} − economia de VT)`, '', '', '', '', '', Math.round(c.extra * 100) / 100]
+    ...(so ? [['Total', '', '', ok.reduce((a, r) => a + r.need, 0), ok.reduce((a, r) => a + r.cur, 0), c.hires]] : [['Total', '', '', '', '', c.hires, Math.round(c.contratacoes * 100) / 100, Math.round(ok.reduce((a, r) => a + (r.noiteDepois || 0), 0) * 100) / 100],
+    [`Custo extra por mês (contratações + aumento do adicional noturno${modoFeriado() === 'dobro' ? ' e dos feriados pagos em dobro' : ''} − economia de VT)`, '', '', '', '', '', Math.round(c.extra * 100) / 100]])
   ];
   const wsR = X.utils.aoa_to_sheet(resumo);
   wsR['!cols'] = [{ wch: 22 }, { wch: 40 }, { wch: 30 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 24 }, { wch: 28 }];
   X.utils.book_append_sheet(wb, wsR, 'Resumo');
-  if (cenarios.length) {
+  if (cenarios.length && !so) {
     const cols = [{ nome: 'Atual', r: resumoCenario(state) }, ...cenarios.map((x) => ({ nome: x.nome, r: resumoCenario(x.dados) }))];
     const num = (v) => Math.round(v * 100) / 100;
     const wsC = X.utils.aoa_to_sheet([
