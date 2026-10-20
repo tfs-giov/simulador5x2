@@ -495,6 +495,8 @@ table.sched { border-collapse: separate; border-spacing: 3px; width: 100%; min-w
 .sched td.who { padding-left: 0; font-weight: 600; }
 .sched td.t { background: var(--primary-soft); color: var(--title); }
 .sched td.f { background: var(--off); color: var(--off-ink); font-weight: 700; }
+.sched td.fx, .sw.fx { background: color-mix(in srgb, var(--off) 55%, var(--surface)); }
+.sched td small, .sched th small { display: block; font-size: 0.6875rem; font-weight: 500; }
 .sched td.x, .sched td.h { color: var(--muted); }
 .newtag { font-size: 0.6875rem; font-weight: 700; background: var(--warn-soft); color: var(--warn); border-radius: 4px; padding: 1px 6px; margin-left: 6px; }
 .empty-state { display: grid; gap: 6px; padding: 8px 0; color: var(--muted); }
@@ -2323,7 +2325,10 @@ function escalaHTML(r) {
   const nSem = Math.max(...r.grupos.map((g) => g.sched.ciclo));
   const w = (ui.week[sid] || 0) % nSem;
   const hasSun = r.grupos.some((g) => g.R[DOM] > 0);
-  const tabs = nSem <= 6
+  // Dia em que a empresa fecha também é folga de quem trabalha na 5x2: aparece como folga, marcada "fechado"
+  const h = horarioDe(r.s), fechado = DIAS.map((_, d) => !janela(h, d));
+  const repete = r.grupos.every((g) => g.sched.weeks.every((wk) => JSON.stringify(wk) === JSON.stringify(g.sched.weeks[0])));
+  const tabs = repete ? '<p class="hint">A escala se repete toda semana.</p>' : nSem <= 6
     ? Array.from({ length: nSem }, (_, i) =>
       `<button type="button" data-act="week" data-sid="${sid}" data-w="${i}" aria-pressed="${i === w}">Semana ${i + 1}</button>`).join('')
     : `<label class="f semsel" for="sem-${sid}">Semana do rodízio
@@ -2337,7 +2342,7 @@ function escalaHTML(r) {
       let horas = 0;
       const cells = grid[e].map((c, d) => {
         if (c === 'T') { horas += g.dias[d].h; return `<td class="t">${hhmm(g.dias[d].a)}–${hhmm(g.dias[d].b)}</td>`; }
-        return c === 'F' ? '<td class="f">Folga</td>' : '<td class="x">—</td>';
+        return c === 'F' || !fechado[d] ? '<td class="f">Folga</td>' : '<td class="f fx">Folga<small>fechado</small></td>';
       }).join('');
       return `<tr><td class="who">${esc(p.nome)}${p.novo ? '<span class="newtag">contratar</span>' : ''}</td>${cells}<td class="h">${fmtH(horas)}</td><td class="h">${fmtH(g.sched.media[e])}</td>${hasSun ? `<td class="h">${g.R[DOM] ? g.sched.sunOff[e] + ' de ' + g.sched.ciclo : '—'}</td>` : ''}</tr>`;
     }).join('');
@@ -2345,10 +2350,10 @@ function escalaHTML(r) {
   }).join('');
   return `<div class="esc-body">
       <div class="weeks">${tabs}</div>
-      <div class="legend"><span><i class="sw" style="background:var(--primary-soft)"></i>Trabalha (horário)</span><span><i class="sw" style="background:var(--off)"></i>Folga</span><span>— fechado</span></div>
+      <div class="legend"><span><i class="sw" style="background:var(--primary-soft)"></i>Trabalha (horário)</span><span><i class="sw" style="background:var(--off)"></i>Folga</span>${fechado.some(Boolean) ? '<span><i class="sw fx"></i>Folga com a empresa fechada</span>' : ''}</div>
       <p class="hint so-cel">Arraste a tabela para o lado para ver a semana toda.</p>
       <div class="scroll" tabindex="0" role="region" aria-label="Escala da semana (role para o lado)"><table class="sched">
-        <thead><tr><th scope="col" class="who">Pessoa</th>${DIAS.map((d) => `<th scope="col">${d}</th>`).join('')}<th scope="col">Horas na semana</th><th scope="col" title="Média de horas por semana no período mostrado">Média</th>${hasSun ? '<th scope="col" title="Domingos de folga no período mostrado">Domingos de folga</th>' : ''}</tr></thead>
+        <thead><tr><th scope="col" class="who">Pessoa</th>${DIAS.map((d, i) => `<th scope="col">${d}${fechado[i] ? '<small>fechado</small>' : ''}</th>`).join('')}<th scope="col">Horas na semana</th><th scope="col" title="Média de horas por semana no período mostrado">Média</th>${hasSun ? '<th scope="col" title="Domingos de folga no período mostrado">Domingos de folga</th>' : ''}</tr></thead>
         <tbody>${body}</tbody>
       </table></div>
     </div>`;
@@ -3101,6 +3106,7 @@ c.res.filter((r) => !r.vazio).forEach((r) => {
     linha(r.plantao ? 'É só um exemplo de 12x36 (plantões de 12h em dias alternados), montado por método aproximado, não uma recomendação. Ajuste conforme a rotina e a convenção coletiva.' : 'É só um exemplo, não uma recomendação. Dá 2 folgas por semana, uma no domingo sempre que possível, mas foi montado automaticamente e pode não atender a todas as regras da sua atividade (no comércio, a folga precisa cair no domingo pelo menos 1 vez a cada 3 semanas). Ajuste conforme a rotina, as preferências da equipe e a convenção coletiva.', 9, cinza, false, 4);
     const ciclo = Math.max(...r.grupos.map((g) => g.sched.ciclo));
     const nSem = Math.min(ciclo, 4);
+    const hr = horarioDe(r.s), fechado = DIAS.map((_, d) => !janela(hr, d));
     if (ciclo > nSem) linha(`O rodízio completo tem ${ciclo} semanas. Aqui aparecem as ${nSem} primeiras; a planilha em Excel traz todas.`, 9, cinza, false, 4);
     for (let w = 0; w < nSem; w++) {
       const body = [];
@@ -3110,7 +3116,7 @@ c.res.filter((r) => !r.vazio).forEach((r) => {
           let horas = 0;
           const cells = g.sched.weeks[w % g.sched.ciclo][e].map((cc, d) => {
             if (cc === 'T') { horas += g.dias[d].h; return `${hhmm(g.dias[d].a)}–${hhmm(g.dias[d].b)}`; }
-            return cc === 'F' ? 'Folga' : '—';
+            return cc === 'F' || !fechado[d] ? 'Folga' : 'Folga (fechado)';
           });
           body.push([p.nome + (p.novo ? ' (contratar)' : ''), ...cells, fmtH(horas), fmtH(g.sched.media[e])]);
         });
@@ -3121,7 +3127,7 @@ c.res.filter((r) => !r.vazio).forEach((r) => {
         head: [[`Semana ${w + 1}`, ...DIAS, 'Horas', 'Média']],
         body, headStyles: { fillColor: escuro, fontSize: 8 }, styles: { fontSize: 8, cellPadding: 3, halign: 'center' },
         columnStyles: { 0: { halign: 'left', cellWidth: 120 } },
-        didParseCell: (d) => { if (d.section === 'body' && d.cell.raw === 'Folga') { d.cell.styles.fillColor = [255, 245, 194]; d.cell.styles.fontStyle = 'bold'; } }
+        didParseCell: (d) => { if (d.section === 'body' && String(d.cell.raw).startsWith('Folga')) { d.cell.styles.fillColor = d.cell.raw === 'Folga' ? [255, 245, 194] : [255, 250, 225]; d.cell.styles.fontStyle = 'bold'; } }
       });
       y = doc.lastAutoTable.finalY + 8;
     }
@@ -3216,6 +3222,7 @@ function montarExcel(c) {
   const usados = new Set(['Resumo']);
   ok.forEach((r) => {
     const nSem = Math.max(...r.grupos.map((g) => g.sched.ciclo));
+    const hr = horarioDe(r.s), fechado = DIAS.map((_, d) => !janela(hr, d));
     const linhas = [['Semana', 'Turno', 'Pessoa', ...DIAS_LONGO, 'Horas na semana', 'Média por semana', 'Domingos de folga']];
     for (let w = 0; w < nSem; w++) {
       r.grupos.forEach((g) => {
@@ -3224,7 +3231,7 @@ function montarExcel(c) {
           let horas = 0;
           const cells = grid[e].map((cc, d) => {
             if (cc === 'T') { horas += g.dias[d].h; return `${hhmm(g.dias[d].a)}–${hhmm(g.dias[d].b)}`; }
-            return cc === 'F' ? 'Folga' : 'Fechado';
+            return cc === 'F' || !fechado[d] ? 'Folga' : 'Folga (fechado)';
           });
           linhas.push([w + 1, `${g.nome} (${hhmm(g.ref.a)}–${hhmm(g.ref.b)})`, p.nome + (p.novo ? ' (contratar)' : ''), ...cells,
             fmtH(horas), fmtH(g.sched.media[e]), g.R[DOM] ? `${g.sched.sunOff[e]} de ${g.sched.ciclo}` : '—']);

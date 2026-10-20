@@ -266,6 +266,23 @@ test('detalhe do setor: resumo por turno e a conta completa num clique', async (
   await ctx.close();
 });
 
+test('escala: dia fechado aparece como folga; semanas iguais não viram abas', async () => {
+  const { p, ctx, erros } = await abrir('computador', { modo: 'rapido' });
+  await p.click('[data-act="rqDias"][data-k="segsex"]');
+  await p.click('[data-act="rqHora"][data-k="h0818"]');
+  await p.fill('#rq-func', '3');
+  await p.waitForSelector('#turnos table.sched');
+  const linhas = await p.$$eval('#turnos table.sched tbody tr:not(.grp)', (trs) => trs.map((tr) =>
+    [tr.querySelectorAll('td.t').length, tr.querySelectorAll('td.fx').length, tr.querySelectorAll('td.x').length]));
+  assert.ok(linhas.length > 0);
+  for (const l of linhas) assert.deepEqual(l, [5, 2, 0], 'seg a sex trabalhando, sáb e dom de folga (fechado)');
+  assert.match(await p.$eval('#turnos table.sched td.fx', (e) => e.innerText), /Folga\s*fechado/);
+  assert.match(await p.$eval('#turnos .weeks', (e) => e.innerText), /se repete toda semana/);
+  assert.equal(await p.$('#turnos [data-act="week"]'), null, 'sem abas de semanas iguais');
+  assert.deepEqual(erros, []);
+  await ctx.close();
+});
+
 test('modo rápido: dias, horário e funcionários prontos dão o resultado', async () => {
   const ctx = await navegador.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
   const p = await ctx.newPage();

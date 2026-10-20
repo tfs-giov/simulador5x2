@@ -91,7 +91,7 @@ npm install
 npm test
 ```
 
-São 27 testes, que devem passar antes de qualquer publicação:
+São 29 testes, que devem passar antes de qualquer publicação:
 
 - **Cálculo** (`tests/calculo.test.js`): casos com valores conferidos, todos os modelos prontos, dados salvos corrompidos, aviso de domingo no comércio e 400 simulações aleatórias. Cada simulação verifica cobertura mínima, dias e horas por pessoa, 12x36, ausência de NaN, PDF e Excel.
 - **Tela** (`tests/tela.test.js`): fluxo no Chromium (celular e computador), modo rápido com modelo pronto, modo "Só a escala", cenários, compartilhamento, passo a passo, teclado, acessibilidade (axe-core) e download de PDF e Excel.

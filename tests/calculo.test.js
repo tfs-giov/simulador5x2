@@ -266,6 +266,17 @@ test('detalhe do setor: tabela por turno, total e conta passo a passo', () => {
   assert.doesNotMatch(html, /tem <b>0<\/b> ·/);
 });
 
+test('escala com a empresa fechada no fim de semana: PDF e Excel mostram a folga', () => {
+  const app = cenario({ ini: '08:00', fim: '18:00', dias: SEM.map((d) => d < 5), setor: { func: 3 } });
+  const c = app.compute();
+  assert.match(app.montarPDF(c).output(), /Folga \\\(fechado\\\)/, 'no PDF os parênteses vêm escapados');
+  const X = require('xlsx');
+  const wb = X.read(app.montarExcel(c));
+  const csv = wb.SheetNames.map((n) => X.utils.sheet_to_csv(wb.Sheets[n])).join('\n');
+  assert.match(csv, /Folga \(fechado\)/);
+  assert.doesNotMatch(csv, /,Fechado,/);
+});
+
 test('só a escala: PDF, Excel e avisos sem valores em reais', () => {
   const app = cenario({ ini: '14:00', fim: '23:30', setor: { func: 2 }, config: { soEscala: true, feriadoModo: 'dobro' } });
   const c = app.compute();
