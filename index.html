@@ -1361,13 +1361,13 @@ function compute() {
     r.noiteExtra = r.noiteDepois - r.noiteAntes;
     folha += r.noiteAntes; noturno += r.noiteExtra;
     const at = atividade();
-    if (r.noiteMin) r.avisos.push(`Há trabalho entre ${at.faixa} (${at.lei}). O custo já inclui o adicional noturno de ${pct1.format(adicNoturno())}%${at.reduz ? ' e a hora noturna reduzida (7h no relógio contam como 8h)' : ''}: ${r.sal ? `cerca de ${brl0.format(r.noiteDepois)} por mês neste setor` : 'informe o salário para calcular o valor'}. Não entram na conta o adicional sobre as horas feitas depois do fim do horário noturno por quem trabalhou a noite toda (Súmula 60 do TST) nem o efeito do adicional no valor do descanso semanal remunerado.`);
+    if (r.noiteMin) r.avisos.push(`Há trabalho entre ${at.faixa} (${at.lei}). O custo já inclui o adicional noturno de ${pct1.format(adicNoturno())}%${at.reduz ? ' e a hora noturna reduzida (7h no relógio contam como 8h)' : ''}: ${soEscala() ? 'o valor aparece no modo Escala e custos' : r.sal ? `cerca de ${brl0.format(r.noiteDepois)} por mês neste setor` : 'informe o salário para calcular o valor'}. Não entram na conta o adicional sobre as horas feitas depois do fim do horário noturno por quem trabalhou a noite toda (Súmula 60 do TST) nem o efeito do adicional no valor do descanso semanal remunerado.`);
     // Feriados pagos em dobro: a mesma política antes e depois, com o valor da hora de cada jornada
     const pagaDobro = modoFeriado() === 'dobro' && !r.plantao && r.feriadoHoras > 0;
     r.ferAntes = pagaDobro ? custoFeriado(r.feriadoHoras, r.sal / 220, fator) : 0;
     r.ferDepois = pagaDobro ? custoFeriado(r.feriadoHoras, r.sal / (r.Hs * 5), fator) : 0;
     folha += r.ferAntes; noturno += r.ferDepois - r.ferAntes;
-    if (pagaDobro) r.avisos.push(`Feriados trabalhados pagos em dobro${multFeriado() === 2 ? ', além do dia já pago no salário' : ' no total, ou seja, só mais uma vez além do dia já pago no salário'} (Lei 605/1949, art. 9º, e Súmula 146 do TST): ${r.sal ? `cerca de ${brl0.format(r.ferDepois)} por mês neste setor` : 'informe o salário para calcular o valor'}.`);
+    if (pagaDobro) r.avisos.push(`Feriados trabalhados pagos em dobro${multFeriado() === 2 ? ', além do dia já pago no salário' : ' no total, ou seja, só mais uma vez além do dia já pago no salário'} (Lei 605/1949, art. 9º, e Súmula 146 do TST): ${soEscala() ? 'o valor aparece no modo Escala e custos' : r.sal ? `cerca de ${brl0.format(r.ferDepois)} por mês neste setor` : 'informe o salário para calcular o valor'}.`);
     if (r.plantao && modoFeriado() !== 'fecha') r.avisos.push('Na 12x36, os feriados trabalhados já são considerados compensados pela própria escala (CLT, art. 59-A, parágrafo único), salvo regra diferente na convenção coletiva.');
     // Quem entra pode ganhar diferente da média da equipe (normalmente o salário de entrada)
     const benNovo = custoBen(r.salNovo, DIAS_MES_5);
@@ -2577,6 +2577,7 @@ function montarPDF(c) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
   const W = doc.internal.pageSize.getWidth(), M = 40;
+  const so = soEscala(); // "Só a escala": o PDF sai sem nenhum valor em reais
   const azul = [15, 107, 99], escuro = [19, 48, 44], cinza = [85, 85, 85];
   let y = M;
   const linha = (txt, size = 10, cor = [51, 51, 51], bold = false, gap = 4) => {
@@ -2597,9 +2598,10 @@ function montarPDF(c) {
     +b.saude ? `Plano de saúde ${brl.format(+b.saude)}/mês${+b.saudeDesc ? ` (coparticipação ${brl.format(+b.saudeDesc)})` : ''}` : '',
     ...b.outros.filter((o) => +o.valor).map((o) => `${o.nome || 'Outro'} ${brl.format(+o.valor)}/mês`)
   ].filter(Boolean);
-  linha(`Jornada semanal: ${c.H}h · Férias: ${state.config.ferias ? 'com cobertura (30 dias por pessoa por ano)' : 'sem cobertura (o número de contratações sai menor que o real)'} · Intervalo: ${intervaloMin()} min · Encargos: ${pct1.format(+state.config.encargos || 0)}% (${REGIMES[state.config.regime]?.label || 'Personalizado'})`, 10);
+  linha(`Jornada semanal: ${c.H}h · Férias: ${state.config.ferias ? 'com cobertura (30 dias por pessoa por ano)' : 'sem cobertura (o número de contratações sai menor que o real)'} · Intervalo: ${intervaloMin()} min${so ? '' : ` · Encargos: ${pct1.format(+state.config.encargos || 0)}% (${REGIMES[state.config.regime]?.label || 'Personalizado'})`}`, 10);
   linha(`Atividade: ${atividade().nome} · Adicional noturno: ${pct1.format(adicNoturno())}% · Dias de alta demanda: ${DIAS.filter((_, d) => diasAlta()[d]).join(', ') || 'nenhum'} · Feriados: ${feriadosAno()} por ano, ${!['fecha', 'folga', 'dobro'].includes(state.config.feriadoModo) ? 'não foi informado se a empresa abre (o cálculo considera que fecha)' : { fecha: 'empresa fecha', folga: 'abre com folga compensatória', dobro: 'abre e paga em dobro' }[modoFeriado()]}`, 10);
   const reg = REGIMES[state.config.regime];
+  if (!so) {
   if (reg && reg.itens.length) linha('Composição dos encargos: ' + reg.itens.map((k) => `${ENCARGOS[k].nome} ${pct2.format(ENCARGOS[k].pct)}%`).join(' · '), 9, cinza);
   linha(`Benefícios por funcionário: ${bens.join(' · ') || 'nenhum informado'}`, 10);
   const salRef = (() => { const f = c.res.filter((r) => !r.vazio && r.cur > 0 && r.sal > 0); const n = f.reduce((a, r) => a + r.cur, 0); return n ? f.reduce((a, r) => a + r.sal * r.cur, 0) / n : 0; })();
@@ -2607,19 +2609,20 @@ function montarPDF(c) {
     const cc = contracheque(salRef);
     linha(`Contracheque estimado (salário médio ${brl.format(salRef)}): INSS ${brl.format(cc.inss)} · IR ${cc.ir > 0 ? brl.format(cc.ir) : 'isento'}${cc.vtDesc ? ' · VT ' + brl.format(cc.vtDesc) : ''}${cc.vrDesc ? ' · VR ' + brl.format(cc.vrDesc) : ''}${cc.saudeDesc ? ' · Plano ' + brl.format(cc.saudeDesc) : ''}${cc.outrosDesc ? ' · Outros ' + brl.format(cc.outrosDesc) : ''} · Líquido ${brl.format(cc.liquido)}`, 10);
   }
+  }
   linha('A convenção coletiva da categoria pode alterar pisos, benefícios obrigatórios e regras de folga.', 9, cinza, false, 12);
   linha('Resumo', 12, azul, true, 2);
   linha(c.hires
-    ? `Mesmo reorganizando turnos e folgas, é preciso contratar ${plural(c.hires, 'pessoa', 'pessoas')} para cobrir o horário de funcionamento com o número de pessoas ao mesmo tempo informado. ${c.extra < 0 ? 'Economia' : 'Custo extra'} de ${brl.format(Math.abs(c.extra))} por mês (${brl.format(Math.abs(c.extra) * 12)} por ano)${c.folha ? `, ${pct1.format(Math.abs(c.extra / c.folha) * 100)}% ${c.extra < 0 ? 'a menos' : 'a mais'} na folha` : ''}.${c.semSalario ? ' Falta o salário médio de algum setor que precisa contratar, então o custo extra fica abaixo do real.' : ''}`
-    : `Não é preciso contratar: reorganizando turnos e folgas, a equipe atual cobre o horário de funcionamento e o número de pessoas ao mesmo tempo informados. ${Math.abs(c.extra) >= 0.5 ? `${c.extra < 0 ? 'Economia' : 'Custo extra'} de ${brl.format(Math.abs(c.extra))} por mês.` : 'Sem custo extra.'}`, 11, escuro, true, 6);
-  doc.autoTable({
+    ? `Mesmo reorganizando turnos e folgas, é preciso contratar ${plural(c.hires, 'pessoa', 'pessoas')} para cobrir o horário de funcionamento com o número de pessoas ao mesmo tempo informado.${so ? '' : ` ${c.extra < 0 ? 'Economia' : 'Custo extra'} de ${brl.format(Math.abs(c.extra))} por mês (${brl.format(Math.abs(c.extra) * 12)} por ano)${c.folha ? `, ${pct1.format(Math.abs(c.extra / c.folha) * 100)}% ${c.extra < 0 ? 'a menos' : 'a mais'} na folha` : ''}.${c.semSalario ? ' Falta o salário médio de algum setor que precisa contratar, então o custo extra fica abaixo do real.' : ''}`}`
+    : `Não é preciso contratar: reorganizando turnos e folgas, a equipe atual cobre o horário de funcionamento e o número de pessoas ao mesmo tempo informados.${so ? '' : ' '}${so ? '' : Math.abs(c.extra) >= 0.5 ? `${c.extra < 0 ? 'Economia' : 'Custo extra'} de ${brl.format(Math.abs(c.extra))} por mês.` : 'Sem custo extra.'}`, 11, escuro, true, 6);
+  if (!so) doc.autoTable({
     startY: y, margin: { left: M, right: M }, theme: 'grid',
     head: [['Contratações', 'Custo das contratações/mês', 'Economia de VT/mês', 'Aumento de noturno e feriados/mês', 'Custo extra por mês', 'Custo extra por ano', 'Folha atual por mês', 'Aumento da folha']],
     body: [[String(c.hires), brl.format(c.contratacoes), brl.format(c.economiaVT), brl.format(c.noturno), brl.format(c.extra), brl.format(c.extra * 12), brl.format(c.folha), c.folha ? pct1.format((c.extra / c.folha) * 100) + '%' : '—']],
     headStyles: { fillColor: azul }, styles: { fontSize: 10 }
   });
-  y = doc.lastAutoTable.finalY + 18;
-  if (c.res.some((r) => !r.vazio && !r.erros.length)) {
+  y = so ? y + 10 : doc.lastAutoTable.finalY + 18;
+  if (!so && c.res.some((r) => !r.vazio && !r.erros.length)) {
     const tl = transicao(c);
     linha('Linha do tempo da transição', 12, azul, true, 2);
     doc.autoTable({
@@ -2646,14 +2649,14 @@ function montarPDF(c) {
     y = doc.lastAutoTable.finalY + 8;
   };
   const okRes = c.res.filter((r) => !r.vazio && !r.erros.length);
-  if (okRes.length) {
+  if (okRes.length && !so) {
     secao('Antes e depois');
     const cmp = comparativoDados(c);
     tabela(['', 'Hoje (6x1)', 'Com 5x2', 'Diferença'], cmp.rows, [1, 2, 3]);
     linha(pdfTxt(cmp.notas.join(' ')), 9, cinza, false, 14);
   }
 
-  if (c.hires) {
+  if (c.hires && !so) {
     secao('Dá para evitar contratações mudando o horário da empresa?');
     const altE = alternativas(c);
     if (altE.uteis.length) {
@@ -2674,14 +2677,16 @@ c.res.filter((r) => !r.vazio).forEach((r) => {
     linha(r.s.nome || 'Setor sem nome', 14, escuro, true, 2);
     if (r.erros.length) { linha('Falta informação: ' + r.erros.join(' '), 10, [181, 26, 0], false, 12); return; }
     const h = horarioDe(r.s);
-    linha(`Jornada: ${nomeJornada(r.s)} · Horário: ${r.s.horario === 'loja' ? 'segue o da empresa' : descreverHorario(h)} · Precisa de ${r.need} · Tem ${r.cur} · ${r.hires ? `Contratar ${r.hires} (${brl.format(r.custo)} por mês)` : r.sobra ? `Equipe com ${r.sobra} a mais` : 'A equipe atual cobre'}`, 10);
+    linha(`Jornada: ${nomeJornada(r.s)} · Horário: ${r.s.horario === 'loja' ? 'segue o da empresa' : descreverHorario(h)} · Precisa de ${r.need} · Tem ${r.cur} · ${r.hires ? `Contratar ${r.hires}${so ? '' : ` (${brl.format(r.custo)} por mês)`}` : r.sobra ? `Equipe com ${r.sobra} a mais` : 'A equipe atual cobre'}`, 10);
     linha('Turnos: ' + r.grupos.map((g) => `${g.nome} ${hhmm(g.ref.a)}–${hhmm(g.ref.b)} (${g.need} ${g.need === 1 ? 'pessoa' : 'pessoas'})`).join(' · '), 10);
     if (r.varia) linha('Pessoas ao mesmo tempo: ' + descreverPessoas(r), 10);
     r.avisos.forEach((a) => linha('Atenção: ' + a, 9, [107, 74, 0]));
     y += 4;
+    if (!so) {
     linha('Antes e depois', 11, azul, true, 2);
     tabela(['', 'Hoje (6x1)', 'Com 5x2', 'Diferença'], comparativoSetor(r, c), [1, 2, 3]);
-    if (r.hires) {
+    }
+    if (r.hires && !so) {
       linha('Dá para evitar contratações neste setor?', 11, azul, true, 2);
       const alt = alternativasSetor(r, c);
       if (alt.uteis.length) {

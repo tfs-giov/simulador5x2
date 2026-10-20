@@ -228,3 +228,14 @@ test('salário de quem será contratado e combinações para a última vaga', ()
   assert.equal(ops.filter((o) => o.melhor).length >= 1, true);
   for (const o of ops) assert.ok(Number.isFinite(o.custo));
 });
+
+test('só a escala: PDF e avisos sem valores em reais', () => {
+  const app = cenario({ ini: '14:00', fim: '23:30', setor: { func: 2 }, config: { soEscala: true, feriadoModo: 'dobro' } });
+  const c = app.compute();
+  assert.ok(c.res[0].avisos.length > 0);
+  for (const a of c.res[0].avisos) assert.ok(!a.includes('R$'), a);
+  const doc = app.montarPDF(c);
+  const texto = doc.output();
+  assert.ok(!/R\$/.test(texto), 'PDF com valor em reais');
+  assert.ok(/Contratar/.test(texto));
+});
