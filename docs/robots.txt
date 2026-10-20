@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tfs-giov.github.io/simulador5x2/sitemap.xml

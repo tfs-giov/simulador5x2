@@ -1,0 +1,17 @@
+{
+  "name": "simulador-escala-5x2",
+  "private": true,
+  "description": "Simulador da passagem da escala 6x1 para a 5x2 (página única em index.html)",
+  "scripts": {
+    "test": "node --test tests/calculo.test.js tests/tela.test.js",
+    "test:calculo": "node --test tests/calculo.test.js",
+    "test:tela": "node --test tests/tela.test.js"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.2",
+    "jspdf": "2.5.1",
+    "jspdf-autotable": "3.8.2",
+    "playwright": "1.47.0",
+    "xlsx": "0.18.5"
+  }
+}
