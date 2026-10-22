@@ -312,6 +312,7 @@ body.so-escala .shead, body.so-escala .srow { grid-template-columns: minmax(0, 1
 @media (max-width: 520px) { .opt-t { min-width: 0; width: 100%; } .seg { width: 100%; } .seg button { flex: 1; padding: 4px 6px; font-size: 0.8125rem; } }
 @media (max-width: 600px) { .enc th:nth-child(2), .enc td:nth-child(2) { display: none; } }
 .msg .link { margin-left: 4px; }
+.estimado { margin: 0; font-size: 0.9375rem; }
 .semsel { max-width: 320px; }
 .semnav { display: grid; grid-template-columns: 40px 1fr 40px; gap: 6px; align-items: center; }
 .semnav .icon { color: var(--primary); font-size: 1.5rem; }
@@ -2222,6 +2223,11 @@ document.addEventListener('click', (e) => {
     document.querySelector(`[data-act="rqDia"][data-i="${i}"]`)?.focus();
     return;
   }
+  if (act === 'corrigeMin') {
+    const i = document.getElementById(b.dataset.campo || 'rq-min');
+    if (i) { i.scrollIntoView({ block: 'center' }); i.focus(); i.select(); }
+    return;
+  }
   if (act === 'rqEstimar') {
     const s = setorRapido(); s.minimoManual = false; atualizaInferencia();
     save(); renderForms(); renderResults();
@@ -2451,7 +2457,7 @@ function setorResHTML(r, c) {
   if (r.ferDepois > 0.5) custos += linhaCusto('Feriados', r.ferDepois, `${n1.format(r.feriadoHoras)}h trabalhadas por ano em ${feriadosAno()} feriados × ${multFeriado()} × ${vh} por hora + encargos ÷ 12`, r.ferAntes);
   return `<article class="res">
     <div class="res-head"><h3>${nome}</h3>${badge}</div>
-    <p>Precisa de <b>${plural(r.need, 'pessoa', 'pessoas')}</b> · ${semFuncionarios(r.s) ? 'equipe de hoje não informada' : `tem <b>${r.cur}</b>`} · ${plural(r.grupos.length, 'turno', 'turnos')}${r.hires && !soEscala() ? ` · custo das contratações: <b>${brl0.format(r.custo)}</b> por mês` : ''}</p>
+    <p>Precisa de <b>${plural(r.need, 'pessoa', 'pessoas')}</b> · ${semFuncionarios(r.s) ? 'equipe de hoje não informada' : `tem <b>${r.cur}</b>`} · ${plural(r.grupos.length, 'turno', 'turnos')}${r.hires && !soEscala() && r.custo > 0.5 ? ` · custo das contratações: <b>${brl0.format(r.custo)}</b> por mês` : ''}</p>
     ${r.avisos.map(avisoHTML).join('')}
     ${maisBtn(key, `Ver detalhes<span class="sr">: ${nome}</span>`)}
     ${ui.det[key] ? `<div class="detail det-setor">${contaSetorHTML(r, c)}${custos && !soEscala() ? `<div class="bloco-det"><h4>Custo</h4>${custos}</div>` : ''}${r.hires && !soEscala() ? altSetorHTML(r, c) : ''}<div><button type="button" class="link" data-act="goTurnos" data-sid="${r.s.id}">Ver exemplo de escala deste setor</button></div></div>` : ''}
@@ -2832,19 +2838,26 @@ function renderResultsSeguro() {
           : `Quem trabalha no feriado recebe as horas em dobro${multFeriado() === 2 ? ', além do dia já pago no salário' : ' no total'} (Súmula 146 do TST). O custo já entra na folha.`}${mf !== 'fecha' ? ' No comércio, abrir em feriado exige autorização na convenção coletiva e respeito à lei do município (Lei 10.101/2000, art. 6º-A).' : ''} ${mf === 'dobro' ? 'A quantidade de feriados e a forma de calcular o dobro ficam' : 'A quantidade de feriados fica'} nas Configurações avançadas (etapa 3).</p></div>`;
   const so = soEscala();
   const equipeHoje = ok.reduce((a, r) => a + r.cur, 0), precisa = ok.reduce((a, r) => a + r.need, 0);
+  const semCusto = c.semSalario && !(Math.abs(c.extra) > 0.5);
   const tiles = so ? `<div class="tiles">
     <div class="tile ${c.hires ? 'alert' : ''}"><span class="k">Contratações</span><span class="v">${c.hires}</span></div>
     <div class="tile"><span class="k">Pessoas necessárias</span><span class="v">${precisa}</span></div>
     <div class="tile"><span class="k">Equipe hoje</span><span class="v">${equipeHoje}</span></div>
   </div>` : `<div class="tiles">
     <div class="tile ${c.hires ? 'alert' : ''}"><span class="k">Contratações</span><span class="v">${c.hires}</span></div>
-    <div class="tile"><span class="k">${c.extra < 0 ? 'Economia por mês' : 'Custo extra por mês'}</span><span class="v">${brl0.format(Math.abs(c.extra))}</span></div>
+    <div class="tile"><span class="k">${c.extra < 0 ? 'Economia por mês' : 'Custo extra por mês'}</span><span class="v">${semCusto ? '—' : brl0.format(Math.abs(c.extra))}</span></div>
     <div class="tile"><span class="k">Aumento da folha</span><span class="v">${aumento == null ? '—' : (aumento >= 0 ? '+' : '−') + pct1.format(Math.abs(aumento) * 100) + '%'}</span></div>
   </div>`;
   let msg = '';
   if (ok.length && !c.hires) msg = `<div class="msg ok">Não precisa contratar: reorganizando turnos e folgas, a equipe atual dá conta.</div>`;
   else if (c.hires) msg = `<div class="msg info">Mesmo reorganizando turnos e folgas, ${c.hires === 1 ? 'falta' : 'faltam'} <b>${plural(c.hires, 'pessoa', 'pessoas')}</b> para cobrir o horário com 2 folgas por semana.</div>`;
-  if (c.semSalario && !so) msg += '<div class="msg warn">Falta o salário médio de algum setor que precisa contratar, então o custo extra mostrado fica abaixo do real. Informe o salário na etapa 2.</div>';
+  // No modo rápido, o "ao mesmo tempo" estimado decide o resultado: fica à vista, com atalho para corrigir
+  const s0 = state.setores[0];
+  if (modo === 'rapido' && ok.length === 1 && filled.length === 1 && s0 && !s0.minimoManual && +s0.func > 0 && +s0.minimo > 0)
+    msg += `<p class="estimado">Conta feita com <b>${plural(+s0.minimo, 'pessoa', 'pessoas')} ao mesmo tempo</b>, estimado pela sua equipe de hoje. <button type="button" class="link" data-act="corrigeMin">Corrigir</button></p>`;
+  if (c.semSalario && !so) msg += modo === 'rapido'
+    ? '<div class="msg warn">Para ver quanto as contratações custam, informe o custo por funcionário. <button type="button" class="link" data-act="corrigeMin" data-campo="rq-custo">Informar</button></div>'
+    : '<div class="msg warn">Falta o salário médio de algum setor que precisa contratar, então o custo extra mostrado fica abaixo do real. Informe o salário na etapa 2.</div>';
   const semFeriado = !['fecha', 'folga', 'dobro'].includes(state.config.feriadoModo);
   if (semFeriado && modo !== 'rapido') msg += '<div class="msg warn">Você não informou se a empresa abre em feriados (etapa 1). Por enquanto, o cálculo considera que fecha.</div>';
   const txtFer = semFeriado ? 'não informado' : { fecha: 'empresa fecha', folga: 'abre com folga extra', dobro: 'abre e paga em dobro' }[mf];
