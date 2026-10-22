@@ -229,6 +229,54 @@ test('salário de quem será contratado e combinações para a última vaga', ()
   for (const o of ops) assert.ok(Number.isFinite(o.custo));
 });
 
+// Seg a sáb, 08h às 22h, 3 ao mesmo tempo, com férias: "um turno só", "fechar um dia" e "fechar dois dias" empatam
+const empate = (setor = {}) => cenario({ ini: '08:00', fim: '22:00', dias: SEM.map((d) => d < 6), setor: { func: 9, minimo: 3, ...setor }, config: { ferias: true } });
+
+test('alternativas: uma linha por resultado; ajustes iguais ficam na nota', () => {
+  const app = empate();
+  const c = app.compute(), r = c.res[0];
+  const semRepetir = (lista, hires) => lista.forEach((x, i) => lista.slice(i + 1).forEach((y) =>
+    assert.ok(hires(x) !== hires(y) || Math.abs(x.economia - y.economia) >= 1, `${x.titulo} e ${y.titulo} dão o mesmo resultado`)));
+  const a = app.alternativasSetor(r, c);
+  semRepetir(a.uteis, (x) => x.r2.hires);
+  const top = a.uteis.find((x) => x.iguais.length);
+  assert.ok(top, 'o cenário tem ajustes com o mesmo resultado');
+  assert.match(top.titulo, /só um turno/, 'fica o ajuste que mexe menos no funcionamento');
+  assert.deepEqual([...top.iguais], ['fechar um dia', 'fechar dois dias']);
+  semRepetir(app.alternativas(c).uteis, (x) => x.c2.hires);
+});
+
+test('detalhe do setor: tabela por turno, total e conta passo a passo', () => {
+  const app = empate();
+  app.ui.det['s' + app.state.setores[0].id] = true;
+  app.renderResults();
+  let html = app.els.results.innerHTML;
+  const tabela = html.match(/<table class="comp stack alt conta">[\s\S]*?<\/table>/);
+  assert.ok(tabela, 'tabela por turno');
+  assert.equal((tabela[0].match(/<th scope="row">/g) || []).length, 2, 'uma linha por turno');
+  assert.match(tabela[0], /4 \+ 1 férias = <b>5<\/b>/);
+  assert.match(html, /Precisa de <b>10<\/b> · tem <b>9<\/b> · <b>falta 1<\/b>/);
+  assert.match(html, /<summary>Ver a conta passo a passo<\/summary><ol>[\s\S]*dias de trabalho a cobrir por semana[\s\S]*<\/ol><\/details>/);
+  assert.match(html, /Custo da contratação: <b>R\$\s?2\.580\/mês<\/b>/);
+  // Sem funcionários informados, não aparece "tem 0"
+  app.state.setores[0].func = '';
+  app.renderResults();
+  html = app.els.results.innerHTML;
+  assert.match(html, /equipe de hoje não informada/);
+  assert.doesNotMatch(html, /tem <b>0<\/b> ·/);
+});
+
+test('escala com a empresa fechada no fim de semana: PDF e Excel marcam o dia fechado no cabeçalho', () => {
+  const app = cenario({ ini: '08:00', fim: '18:00', dias: SEM.map((d) => d < 5), setor: { func: 3 } });
+  const c = app.compute();
+  assert.match(app.montarPDF(c).output(), /\\\(fechado\\\)/, 'no PDF os parênteses vêm escapados');
+  const X = require('xlsx');
+  const wb = X.read(app.montarExcel(c));
+  const csv = wb.SheetNames.map((n) => X.utils.sheet_to_csv(wb.Sheets[n])).join('\n');
+  assert.match(csv, /Sábado \(fechado\),Domingo \(fechado\)/);
+  assert.doesNotMatch(csv, /,Fechado,/);
+});
+
 test('só a escala: PDF, Excel e avisos sem valores em reais', () => {
   const app = cenario({ ini: '14:00', fim: '23:30', setor: { func: 2 }, config: { soEscala: true, feriadoModo: 'dobro' } });
   const c = app.compute();

@@ -188,6 +188,19 @@ button.more:hover { background: transparent; text-decoration: underline; }
 h4 { margin: 0; font-size: 0.9375rem; color: var(--title); }
 .steps { display: grid; gap: 6px; }
 .steps ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 0.9375rem; }
+.det-setor { gap: 22px; }
+.bloco-det { display: grid; gap: 8px; }
+.bloco-det > h4 { font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.bloco-det > p, .custo-l p { margin: 0; }
+.total-det { font-size: 1rem; padding: 8px 12px; background: var(--surface-2); border-radius: 6px; font-variant-numeric: tabular-nums; }
+.custo-l { display: grid; gap: 2px; }
+.conta-mini { font-size: 0.8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.det-setor table.comp, .det-setor .total-det { max-width: 760px; }
+table.conta th:not(:first-child), table.ajustes th:not(:first-child) { text-align: right; }
+.detail details.saiba > summary { font-size: 0.875rem; margin: 0; }
+.detail details.saiba[open] > summary { margin-bottom: 6px; }
+.detail details.saiba ol, .detail details.saiba p { margin: 0 0 6px; font-size: 0.875rem; }
+.detail details.saiba ol { padding-left: 20px; display: grid; gap: 6px; }
 .cmp tbody th { text-align: left; font-weight: 600; font-size: inherit; color: var(--ink); padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); }
 .cmp th:not(:first-child) { text-align: right; }
 
@@ -200,6 +213,41 @@ h4 { margin: 0; font-size: 0.9375rem; color: var(--title); }
 .prem-line p { margin: 0; }
 .fer-q { border-top: 0; margin-top: 16px; }
 .modo-calc { margin: 0 0 12px; }
+.rapido-form { display: none; }
+.rapido-cta { display: none; }
+body.rapido .rapido-cta { display: grid; }
+body.rapido [data-recolhe], body.rapido .advwrap, body.rapido #adv { display: none !important; }
+.modo-seg button { min-width: 112px; }
+#modoBtn[hidden] { display: none; }
+.dias-mini { margin-top: 6px; }
+.dias-mini .chip { min-width: 52px; }
+.rq-horas { display: grid; grid-template-columns: repeat(2, minmax(0, 140px)); gap: 12px; margin-top: 6px; }
+.rq-campos.so { grid-template-columns: minmax(0, 160px) minmax(0, 160px); }
+.rq-nota:empty { display: none; }
+.rapido-det-titulo h2 { margin: 8px 0 2px; font-size: 1.25rem; color: var(--title); }
+.rapido-det-titulo small { font-weight: 500; color: var(--muted); font-size: 0.875rem; }
+body.rapido main .inner > * { order: 10; }
+body.rapido main .inner > #modoBar { order: 0; }
+body.rapido main .inner > .intro { order: 1; }
+body.rapido main .inner > .rapido-form { order: 2; }
+body.rapido main .inner > #resultado { order: 3; }
+body.rapido main .inner > #turnos { order: 4; }
+body.rapido main .inner > .rapido-cta { order: 5; }
+.rapido-form .hint { margin: 2px 0 0; }
+.rq-n { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 8px; border-radius: 50%; background: var(--primary); color: var(--primary-ink); font-size: 0.75rem; }
+.rapido-form .modo-calc { border-top: 1px solid var(--line); padding-top: 12px; }
+body.rapido .rapido-form { display: grid; gap: 14px; }
+#rapidoForm { display: grid; gap: 16px; }
+.rapido-form h2 { margin: 0; }
+.rq { display: grid; gap: 6px; }
+.rq-t { font-weight: 700; color: var(--title); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-weight: 600; min-height: 40px; }
+.chip[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); }
+.rq-campos { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 150px) minmax(0, 220px); gap: 12px; align-items: end; }
+@media (max-width: 520px) { .rq-campos { grid-template-columns: 1fr 1fr; } .rq-campos > :last-child:nth-child(3) { grid-column: 1 / -1; } }
+body.rapido .rapido-form .modo-calc { margin: 0; }
+body.rapido:not(.setor-aberto) [data-recolhe="setor"] > :not(.step-head):not(.resumo-linha) { display: none !important; }
 details.saiba-in { display: inline; }
 details.saiba-in > summary { display: inline; cursor: pointer; color: var(--primary); font-weight: 600; }
 details.saiba-in[open] { display: block; margin-top: 6px; }
@@ -229,7 +277,6 @@ body.rapido:not(.jor-mostra) .col-jor { display: none !important; }
 body.rapido:not(.jor-mostra) .shead, body.rapido:not(.jor-mostra) .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .95fr) minmax(0, .9fr) minmax(0, 1fr) 32px; }
 body.rapido.so-escala:not(.jor-mostra) .shead, body.rapido.so-escala:not(.jor-mostra) .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .9fr) minmax(0, 1fr) 32px; }
 @media (max-width: 900px) { body.rapido .srow { grid-template-columns: 1fr 1fr !important; } }
-#rapidoBtn[hidden] { display: none; }
 body.so-escala .so-custo { display: none !important; }
 body.so-escala .shead, body.so-escala .srow { grid-template-columns: minmax(0, 1.3fr) minmax(0, .75fr) minmax(0, .75fr) minmax(0, 1fr) minmax(0, 1.35fr) 32px; }
 @media (max-width: 900px) { body.so-escala .srow { grid-template-columns: 1fr 1fr; } }
@@ -265,6 +312,7 @@ body.so-escala .shead, body.so-escala .srow { grid-template-columns: minmax(0, 1
 @media (max-width: 520px) { .opt-t { min-width: 0; width: 100%; } .seg { width: 100%; } .seg button { flex: 1; padding: 4px 6px; font-size: 0.8125rem; } }
 @media (max-width: 600px) { .enc th:nth-child(2), .enc td:nth-child(2) { display: none; } }
 .msg .link { margin-left: 4px; }
+.estimado { margin: 0; font-size: 0.9375rem; }
 .semsel { max-width: 320px; }
 .semnav { display: grid; grid-template-columns: 40px 1fr 40px; gap: 6px; align-items: center; }
 .semnav .icon { color: var(--primary); font-size: 1.5rem; }
@@ -401,6 +449,8 @@ body.has-bar footer { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0p
   .stack thead { display: none; }
   .stack tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .stack.alt tr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stack.alt.conta tr { grid-template-columns: 1fr 0.7fr 1.3fr; }
+  .stack.alt.ajustes tr { grid-template-columns: 0.8fr 1.1fr 1.2fr; }
   .stack tbody th { grid-column: 1 / -1; border: 0; padding: 0; }
   .stack td, .stack td.n { border: 0; padding: 0 !important; text-align: left !important; white-space: normal; }
   .stack td::before { content: attr(data-l); display: block; font-size: 0.75rem; color: var(--muted); font-weight: 600; }
@@ -446,6 +496,7 @@ table.sched { border-collapse: separate; border-spacing: 3px; width: 100%; min-w
 .sched td.who { padding-left: 0; font-weight: 600; }
 .sched td.t { background: var(--primary-soft); color: var(--title); }
 .sched td.f { background: var(--off); color: var(--off-ink); font-weight: 700; }
+.sched th small { display: block; font-size: 0.6875rem; font-weight: 500; }
 .sched td.x, .sched td.h { color: var(--muted); }
 .newtag { font-size: 0.6875rem; font-weight: 700; background: var(--warn-soft); color: var(--warn); border-radius: 4px; padding: 1px 6px; margin-left: 6px; }
 .empty-state { display: grid; gap: 6px; padding: 8px 0; color: var(--muted); }
@@ -492,12 +543,15 @@ footer b { color: var(--ink); }
   <div class="inner">
     <div class="modo" id="modoBar">
       <nav class="stepper" id="stepper" aria-label="Etapas"></nav>
+      <div class="modo-seg seg" role="group" aria-label="Modo do simulador">
+        <button type="button" data-act="setModo" data-v="rapido" id="modoRapido">Rápido</button>
+        <button type="button" data-act="setModo" data-v="det" id="modoDet">Detalhado</button>
+      </div>
       <button type="button" class="link" data-act="modo" id="modoBtn"></button>
-      <button type="button" class="link" data-act="rapido" id="rapidoBtn">Voltar ao modo rápido</button>
     </div>
     <section class="intro" data-step="1">
       <h1>Fim da escala 6x1: quantas pessoas contratar e quanto custa</h1>
-      <p class="sub">Escolha seu tipo de negócio e veja o resultado na hora.</p>
+      <p class="sub">Marque quando a empresa abre e quantos funcionários tem. O resultado sai na hora.</p>
       <ul class="selos"><li>Grátis, sem cadastro</li><li>Nada sai do seu aparelho</li><li>Não oficial</li></ul>
       <details class="saiba"><summary>O que muda com a Emenda Constitucional 141/2026</summary>
       <p>Na escala 6x1, cada pessoa trabalha 6 dias e folga 1, com até 44 horas por semana. A Emenda Constitucional 141/2026 acaba com essa escala: o limite cai para 42 horas semanais em 15/12/2026, já com 2 folgas por semana, e para 40 horas em dezembro de 2027, sem redução de salário. Na prática, passa a valer a escala 5x2: 5 dias de trabalho e 2 de folga.</p>
@@ -511,10 +565,13 @@ footer b { color: var(--ink); }
       </details>
     </section>
 
-    <section class="card modelos" aria-labelledby="hMod" data-step="1">
-      <h2 id="hMod">Qual é o seu negócio?</h2>
-      <p class="hint">O modelo preenche horários, setores e salários típicos. Depois é só ajustar.</p>
-      <div id="modelosGrid" class="modelos-grid" role="group" aria-labelledby="hMod"></div>
+    <section class="card rapido-form" aria-labelledby="hRap" data-step="1">
+      <h2 id="hRap">Simulação rápida</h2>
+      <div id="rapidoForm"></div>
+    </section>
+    <section class="card rapido-cta" aria-label="Modo detalhado">
+      <p><b>Precisa de mais detalhes?</b> Vários setores, turnos, feriados e benefícios ficam no modo detalhado. Os dados que você já informou continuam.</p>
+      <div><button type="button" data-act="setModo" data-v="det">Abrir o modo detalhado</button></div>
     </section>
 
     <section class="card" aria-labelledby="h1s" data-step="1" data-recolhe="func">
@@ -528,8 +585,9 @@ footer b { color: var(--ink); }
       </details>
     </section>
 
-    <section class="card" aria-labelledby="h2s" data-step="2">
+    <section class="card" aria-labelledby="h2s" data-step="2" data-recolhe="setor">
       <div class="step-head"><span class="num-badge">2</span><h2 id="h2s">Setores</h2></div>
+      <div class="resumo-linha" id="resumoSetor"></div>
       <div id="modoCalc"></div>
       <p class="hint">Um setor por função. Conte só empregados, sem donos e sócios.</p>
       <div id="avisoModelo"></div>
@@ -731,7 +789,7 @@ function horarioVazio() {
   return { dias: new Array(7).fill(false), ini: '', fim: '', porDia: false, h: Array.from({ length: 7 }, () => ({ ini: '', fim: '' })) };
 }
 function novoSetor() {
-  return { id: uid(), nome: '', func: '', salario: '', salNovo: '', minimo: '', jornada: '8', porDiaMin: false, minDia: new Array(7).fill(''), porTurnoMin: false, minTurno: new Array(6).fill(''), minGrade: Array.from({ length: 6 }, () => new Array(7).fill('')), horario: 'loja', proprio: horarioVazio(), turnosModo: 'auto', turnosManual: [] };
+  return { id: uid(), nome: '', func: '', salario: '', salNovo: '', custoMedio: '', minimo: '', jornada: '8', porDiaMin: false, minDia: new Array(7).fill(''), porTurnoMin: false, minTurno: new Array(6).fill(''), minGrade: Array.from({ length: 6 }, () => new Array(7).fill('')), horario: 'loja', proprio: horarioVazio(), turnosModo: 'auto', turnosManual: [] };
 }
 // Modelos prontos de negócios típicos. Faixas [mín, máx] de pessoas ao mesmo tempo e de salário;
 // o site usa o meio da faixa, e a simulação de 1.000 empresas (simulacao/) sorteia dentro dela
@@ -851,9 +909,11 @@ function aplicarModo() {
   const wiz = modo === 'passo', rapido = modo === 'rapido';
   document.body.classList.toggle('wiz', wiz);
   document.body.classList.toggle('rapido', rapido);
-  document.getElementById('rapidoBtn').hidden = rapido;
+  document.getElementById('modoRapido').setAttribute('aria-pressed', String(rapido));
+  document.getElementById('modoDet').setAttribute('aria-pressed', String(!rapido));
+  document.getElementById('modoBtn').hidden = rapido;
   document.body.dataset.passo = String(passo);
-  document.getElementById('modoBtn').textContent = rapido ? 'Ver todas as opções' : wiz ? 'Ver tudo numa página' : 'Usar o modo passo a passo';
+  document.getElementById('modoBtn').textContent = wiz ? 'Ver tudo numa página' : 'Uma etapa por vez';
   document.getElementById('stepper').innerHTML = passos().map((t, i) =>
     `<button type="button" data-act="irPasso" data-n="${i + 1}"${i + 1 === passo ? ' aria-current="step"' : ''} class="${i + 1 < passo ? 'feito' : ''}"><span class="sn">${i + 1 < passo ? '✓' : i + 1}</span><span class="st">${t}</span></button>`).join('');
   document.getElementById('wizNext').textContent = passo === 3 ? 'Ver resultado' : passo === 4 ? 'Revisar dados' : `Próximo: ${passos()[passo]}`;
@@ -1596,6 +1656,100 @@ function feriadoPerguntaHTML() {
     <p class="hint">Quem trabalha no feriado ganha outra folga ou recebe em dobro.</p>
     <details class="saiba"><summary>Saiba mais</summary><p class="hint">Lei 605/1949, art. 9º. A folga extra pode exigir mais contratações; o pagamento em dobro aumenta o custo da folha. No comércio, abrir em feriado exige autorização na convenção coletiva e respeito à lei do município (Lei 10.101/2000, art. 6º-A). Sem resposta, o cálculo considera que a empresa fecha.</p></details></div>`;
 }
+// ---------- Modo rápido: escolhas prontas de dias e horário + número de funcionários ----------
+const DIAS_PRONTOS = {
+  segsex: { nome: 'Seg a Sex', dias: [1, 1, 1, 1, 1, 0, 0] },
+  segsab: { nome: 'Seg a Sáb', dias: [1, 1, 1, 1, 1, 1, 0] },
+  segdom: { nome: 'Todos os dias', dias: [1, 1, 1, 1, 1, 1, 1] },
+  tersab: { nome: 'Ter a Sáb', dias: [0, 1, 1, 1, 1, 1, 0] }
+};
+const HORAS_PRONTAS = {
+  h0818: { nome: '08h às 18h', ini: '08:00', fim: '18:00' },
+  h0919: { nome: '09h às 19h', ini: '09:00', fim: '19:00' },
+  h0822: { nome: '08h às 22h', ini: '08:00', fim: '22:00' },
+  h0622: { nome: '06h às 22h', ini: '06:00', fim: '22:00' },
+  h24: { nome: '24 horas', ini: '00:00', fim: '00:00' }
+};
+// Garante o setor único do modo rápido
+function setorRapido() {
+  if (!state.setores.length) state.setores.push(novoSetor());
+  const s = state.setores[0];
+  if (!s.nome) s.nome = 'Equipe';
+  return s;
+}
+// Quantas pessoas a equipe de hoje consegue manter trabalhando ao mesmo tempo na 6x1 (44h, 6 dias):
+// o maior número cuja necessidade na regra atual cabe nos funcionários informados
+function inferirMinimo(s) {
+  const f = Math.floor(+s.func || 0);
+  if (!f || !state.loja.dias.some(Boolean)) return s.minimo || '';
+  let melhor = 1;
+  for (let m = 1; m <= 80; m++) {
+    const r = analisar({ ...s, minimo: m, porDiaMin: false, porTurnoMin: false }, 44, 6);
+    if (r.erros.length || r.need > f) break;
+    melhor = m;
+  }
+  return melhor;
+}
+function atualizaInferencia() {
+  if (modo !== 'rapido' || !state.setores.length) return;
+  const s = state.setores[0];
+  if (!s.minimoManual && +s.func > 0) s.minimo = inferirMinimo(s);
+}
+// Resumo de uma linha dos setores (modo rápido); atualizado também a cada digitação, junto com o resultado
+function atualizaResumoSetor() {
+  const el = document.getElementById('resumoSetor');
+  if (!el) return;
+  const preench = state.setores.filter((x) => !setorVazio(x));
+  el.innerHTML = `<span>${preench.length ? preench.map((x) => `${esc(x.nome || 'Setor')}: ${plural(+x.func || 0, 'funcionário', 'funcionários')}, ${+x.minimo || 0} ao mesmo tempo`).join(' · ') : 'Nenhum setor ainda.'}</span><button type="button" class="link" data-act="bloco" data-k="setor" aria-expanded="${!!ui.bloco.setor}">${ui.bloco.setor ? 'Fechar' : 'Ajustar'}</button>`;
+}
+function rapidoFormHTML() {
+  const L = state.loja, varios = state.setores.filter((x) => !setorVazio(x)).length > 1;
+  const igual = (a, b) => a.every((v, i) => !!v === !!b[i]);
+  const chip = (act, k, nome, on, extra = '') => `<button type="button" class="chip" data-act="${act}" data-k="${k}" aria-pressed="${on}"${extra}>${nome}</button>`;
+  const diasOn = Object.entries(DIAS_PRONTOS).find(([, d]) => igual(d.dias, L.dias))?.[0];
+  const horaOn = !L.porDia && Object.entries(HORAS_PRONTAS).find(([, h]) => h.ini === L.ini && h.fim === L.fim)?.[0];
+  const outrosDias = !!ui.rqDias || (L.dias.some(Boolean) && !diasOn);
+  const outraHora = !!ui.rqHora || (!!L.ini && !!L.fim && !horaOn);
+  const s = state.setores[0] || novoSetor();
+  const so = soEscala();
+  const diasMini = outrosDias ? `<div class="chips dias-mini" role="group" aria-label="Dias em que abre">${DIAS.map((d, i) => `<button type="button" class="chip" data-act="rqDia" data-i="${i}" aria-pressed="${!!L.dias[i]}" aria-label="${DIAS_LONGO[i]}">${d}</button>`).join('')}</div>` : '';
+  const horaLivre = outraHora ? `<div class="rq-horas"><label class="f" for="rq-ini"><span>Abre às</span><input id="rq-ini" class="hora" inputmode="numeric" maxlength="5" placeholder="08:00" autocomplete="off" data-p="loja.ini" value="${esc(L.ini)}"></label>
+      <label class="f" for="rq-fim"><span>Fecha às</span><input id="rq-fim" class="hora" inputmode="numeric" maxlength="5" placeholder="18:00" autocomplete="off" data-p="loja.fim" value="${esc(L.fim)}"></label></div>` : '';
+  const equipe = varios
+    ? `<p>Esta simulação tem vários setores. <button type="button" class="link" data-act="setModo" data-v="det">Ajustar no modo detalhado</button></p>`
+    : `<div class="rq-campos${so ? ' so' : ''}">
+      <label class="f" for="rq-func"><span>Funcionários</span><input id="rq-func" type="number" min="1" step="1" inputmode="numeric" data-s="${s.id}" data-p="func" data-t="num" value="${esc(s.func)}" placeholder="Ex.: 8"></label>
+      <label class="f" for="rq-min"><span>Ao mesmo tempo</span><input id="rq-min" type="number" min="1" step="1" inputmode="numeric" data-s="${s.id}" data-p="minimo" data-t="num" value="${esc(s.minimo)}" placeholder="Ex.: 2" aria-describedby="rqInfer"></label>
+      ${so ? '' : `<label class="f" for="rq-custo"><span>Custo por funcionário</span><span class="money"><input id="rq-custo" type="number" min="0" step="50" inputmode="decimal" data-s="${s.id}" data-p="custoMedio" data-t="num" value="${esc(custoMedioDe(s))}" placeholder="Opcional"></span></label>`}
+    </div>
+    <p class="hint rq-nota" id="rqInfer">${inferenciaTexto(s)}</p>`;
+  return `<div class="rq"><span class="rq-t" id="rq-dias"><span class="rq-n">1</span>Dias</span><div class="chips" role="group" aria-labelledby="rq-dias">${Object.entries(DIAS_PRONTOS).map(([k, d]) => chip('rqDias', k, d.nome, !ui.rqDias && diasOn === k)).join('')}${chip('rqOutro', 'dias', 'Outros', outrosDias)}</div>${diasMini}</div>
+    <div class="rq"><span class="rq-t" id="rq-hora"><span class="rq-n">2</span>Horário</span><div class="chips" role="group" aria-labelledby="rq-hora">${Object.entries(HORAS_PRONTAS).map(([k, h]) => chip('rqHora', k, h.nome, !ui.rqHora && horaOn === k)).join('')}${chip('rqOutro', 'hora', 'Outro', outraHora)}</div>${horaLivre}</div>
+    <div class="rq"><span class="rq-t"><span class="rq-n">3</span>Equipe</span>${equipe}</div>
+    <div id="modoCalcR"></div>`;
+}
+// Custo por funcionário (salário + encargos + benefícios, por mês) ↔ salário usado no cálculo
+const fatorEncargos = () => 1 + (+state.config.encargos || 0) / 100;
+function salarioDoCusto(custo) {
+  const c = +custo || 0, f = fatorEncargos();
+  let sal = c / f;
+  for (let i = 0; i < 4; i++) sal = Math.max(0, (c - custoBen(sal, DIAS_MES_5).total) / f);
+  return Math.round(sal / 10) * 10;
+}
+function custoMedioDe(s) {
+  if (s.custoMedio !== '' && s.custoMedio != null) return s.custoMedio;
+  return +s.salario > 0 ? Math.round((+s.salario * fatorEncargos() + custoBen(+s.salario, DIAS_MES_5).total) / 10) * 10 : '';
+}
+function custoTexto(s) {
+  return +s.salario > 0 ? `Custo de ${brl0.format(+custoMedioDe(s))} ≈ salário de ${brl0.format(+s.salario)} + encargos.` : '';
+}
+function inferenciaTexto(s) {
+  const def = '<b>Ao mesmo tempo</b> é quantas pessoas precisam estar trabalhando juntas em qualquer horário (ex.: 2 no caixa).';
+  if (!(+s.func > 0)) return def;
+  return s.minimoManual
+    ? `${def} <button type="button" class="link" data-act="rqEstimar">Usar a estimativa</button>`
+    : `${def} Estimamos pela sua equipe de hoje; corrija se precisar.`;
+}
 // Preenche tudo a partir de um modelo pronto (ou começa do zero); a simulação anterior pode ser recuperada
 function aplicarModelo(k) {
   const anterior = JSON.parse(JSON.stringify(state));
@@ -1762,11 +1916,9 @@ function renderForms() {
   const so = soEscala();
   document.body.classList.toggle('so-escala', so);
   // Modelos prontos
-  const mk = state.config.modelo;
-  document.getElementById('modelosGrid').innerHTML = Object.entries(MODELOS).map(([k, m]) =>
-    `<button type="button" class="modelo" data-act="modelo" data-k="${k}" aria-pressed="${mk === k}"><span aria-hidden="true">${m.icone}</span>${m.nome}</button>`).join('')
-    + `<button type="button" class="modelo" data-act="modelo" data-k="zero" aria-pressed="${mk === 'zero'}"><span aria-hidden="true">✏️</span>Outro (do zero)</button>`;
-  document.getElementById('avisoModelo').innerHTML = MODELOS[mk] ? `<p class="aviso-modelo">O modelo estimou a equipe de hoje: confira o número de <b>funcionários</b> de cada setor.</p>` : '';
+  document.getElementById('rapidoForm').innerHTML = rapidoFormHTML();
+  atualizaResumoSetor();
+  document.body.classList.toggle('setor-aberto', !!ui.bloco.setor);
   // Blocos recolhidos no modo rápido, com um resumo de uma linha
   const semDias = !state.loja.dias.some(Boolean);
   const abreFunc = ui.bloco.func || semDias, abreCusto = !!ui.bloco.custo;
@@ -1777,9 +1929,11 @@ function renderForms() {
   const ben = custoBen(2000, DIAS_MES_5);
   document.getElementById('resumoCusto').innerHTML = `<span>${esc(REGIMES[state.config.regime]?.label || 'Personalizado')} · encargos de ${pct1.format(+state.config.encargos || 0)}% · ${ben.total > 0.5 ? 'com benefícios' : 'sem benefícios'}</span><button type="button" class="link" data-act="bloco" data-k="custo" aria-expanded="${abreCusto}">${abreCusto ? 'Fechar' : 'Ajustar'}</button>`;
   document.body.classList.toggle('jor-mostra', !!ui.jorMostra || state.setores.some((s) => (s.jornada || '8') !== '8'));
-  document.getElementById('modoCalc').innerHTML = `<div class="opts fer-q modo-calc"><div class="opt"><span class="opt-t" id="q-modo">Calcular</span>
-    <div class="seg" role="group" aria-labelledby="q-modo"><button type="button" data-act="soEscala" data-v="nao" aria-pressed="${!so}">Escala e custos</button><button type="button" data-act="soEscala" data-v="sim" aria-pressed="${so}">Só a escala</button></div></div>
+  const calcHTML = (sfx) => `<div class="opts fer-q modo-calc"><div class="opt"><span class="opt-t" id="q-modo${sfx}">Calcular</span>
+    <div class="seg" role="group" aria-labelledby="q-modo${sfx}"><button type="button" data-act="soEscala" data-v="nao" aria-pressed="${!so}">Escala e custos</button><button type="button" data-act="soEscala" data-v="sim" aria-pressed="${so}">Só a escala</button></div></div>
     </div>`;
+  document.getElementById('modoCalc').innerHTML = calcHTML('');
+  const mcr = document.getElementById('modoCalcR'); if (mcr) mcr.innerHTML = calcHTML('-r');
   document.getElementById('setores').innerHTML = state.setores.map(setorHTML).join('') || '<p class="hint">Nenhum setor. Adicione o primeiro.</p>';
   document.getElementById('custos').innerHTML = custosHTML();
   const adv = document.getElementById('adv');
@@ -1845,6 +1999,20 @@ function onField(e) {
   save();
   ui.codigo = ''; // o código gerado antes não vale mais
   if (p === 'func' && el.dataset.s) ui.funcOk[el.dataset.s] = true;
+  if (p === 'minimo' && el.dataset.s) root.minimoManual = true;
+  if (p === 'custoMedio' && el.dataset.s) {
+    root.salario = +v > 0 ? salarioDoCusto(v) : '';
+    if (!root.nome) root.nome = 'Equipe';
+    const ct = document.getElementById('rqCusto'); if (ct) ct.textContent = custoTexto(root);
+  }
+  if (p === 'salario' && el.dataset.s) root.custoMedio = '';
+  if (modo === 'rapido' && ((p === 'func' && root === state.setores[0]) || p === 'loja.ini' || p === 'loja.fim')) {
+    const s0 = setorRapido();
+    atualizaInferencia();
+    const mi = document.getElementById('rq-min'); if (mi && document.activeElement !== mi) mi.value = s0.minimo;
+    const inf = document.getElementById('rqInfer'); if (inf) inf.innerHTML = inferenciaTexto(s0);
+  }
+  if (p === 'minimo' && modo === 'rapido') { const inf = document.getElementById('rqInfer'); if (inf) inf.innerHTML = inferenciaTexto(root); }
   if (el.dataset.re) {
     // Mudança de estrutura (seleção, caixa de marcar): redesenha já e mantém o foco no campo
     const fid = el.id;
@@ -2015,24 +2183,68 @@ document.addEventListener('click', (e) => {
   }
   if (act === 'modo') {
     modo = modo === 'completo' ? 'passo' : 'completo';
-    try { localStorage.setItem(MODO, modo); } catch (err) { /* sem armazenamento */ }
+    try { localStorage.setItem(MODO, modo); localStorage.setItem('escala5x2:modoDet', modo); } catch (err) { /* sem armazenamento */ }
     aplicarModo(); renderResults();
     b.focus();
     return;
   }
-  if (act === 'rapido') {
-    modo = 'rapido';
+  if (act === 'setModo') {
+    // Rápido ⇄ Detalhado: os dados são os mesmos; o detalhado volta ao último formato usado (página ou etapas)
+    let ult = 'completo';
+    try { ult = localStorage.getItem('escala5x2:modoDet') || 'completo'; } catch (err) { /* sem armazenamento */ }
+    modo = b.dataset.v === 'rapido' ? 'rapido' : ult;
     try { localStorage.setItem(MODO, modo); } catch (err) { /* sem armazenamento */ }
     aplicarModo(); renderForms(); renderResults();
-    document.getElementById('modoBtn').focus();
+    window.scrollTo({ top: 0 });
+    document.getElementById(b.dataset.v === 'rapido' ? 'modoRapido' : 'modoDet').focus();
     return;
   }
   if (act === 'modelo') { aplicarModelo(b.dataset.k); return; }
+  if (act === 'rqDias' || act === 'rqHora') {
+    const L = state.loja;
+    if (act === 'rqDias') { L.dias = DIAS_PRONTOS[b.dataset.k].dias.map(Boolean); ui.rqDias = false; }
+    else { const h = HORAS_PRONTAS[b.dataset.k]; L.ini = h.ini; L.fim = h.fim; L.porDia = false; ui.rqHora = false; }
+    setorRapido(); atualizaInferencia();
+    save(); renderForms(); renderResults();
+    document.querySelector(`[data-act="${act}"][data-k="${b.dataset.k}"]`)?.focus();
+    return;
+  }
+  if (act === 'rqOutro') {
+    if (b.dataset.k === 'hora') ui.rqHora = true; else ui.rqDias = true;
+    renderForms();
+    (b.dataset.k === 'hora' ? document.getElementById('rq-ini') : document.querySelector('[data-act="rqDia"]'))?.focus();
+    return;
+  }
+  if (act === 'rqDia') {
+    const i = +b.dataset.i;
+    state.loja.dias[i] = !state.loja.dias[i];
+    setorRapido(); atualizaInferencia();
+    save(); renderForms(); renderResults();
+    document.querySelector(`[data-act="rqDia"][data-i="${i}"]`)?.focus();
+    return;
+  }
+  if (act === 'corrigeMin') {
+    const i = document.getElementById(b.dataset.campo || 'rq-min');
+    if (i) { i.scrollIntoView({ block: 'center' }); i.focus(); i.select(); }
+    return;
+  }
+  if (act === 'rqEstimar') {
+    const s = setorRapido(); s.minimoManual = false; atualizaInferencia();
+    save(); renderForms(); renderResults();
+    document.getElementById('rq-min')?.focus();
+    return;
+  }
   if (act === 'bloco') {
     const k = b.dataset.k;
-    ui.bloco[k] = !ui.bloco[k];
+    const daCaixa = !!b.closest('.rapido-form');
+    ui.bloco[k] = daCaixa ? true : !ui.bloco[k];
     renderForms();
-    document.querySelector(`[data-act="bloco"][data-k="${k}"]`)?.focus();
+    if (daCaixa) {
+      // Veio do "Mudar" da simulação rápida: leva até o bloco, que fica abaixo do resultado
+      const card = document.querySelector(`[data-recolhe="${k}"]`);
+      card?.scrollIntoView({ block: 'start' });
+      (card?.querySelector('input[data-p="minimo"]') || card?.querySelector('input, select'))?.focus();
+    } else document.querySelector(`[data-recolhe="${k}"] [data-act="bloco"][data-k="${k}"]`)?.focus();
     return;
   }
   if (act === 'abreOpc') { ui.open['opc' + b.dataset.s] = true; renderForms(); document.querySelector(`[data-act="abreVar"][data-s="${b.dataset.s}"]`)?.focus(); return; }
@@ -2118,7 +2330,10 @@ function escalaHTML(r) {
   const nSem = Math.max(...r.grupos.map((g) => g.sched.ciclo));
   const w = (ui.week[sid] || 0) % nSem;
   const hasSun = r.grupos.some((g) => g.R[DOM] > 0);
-  const tabs = nSem <= 6
+  // Dia em que a empresa fecha também é folga de quem trabalha na 5x2: aparece como folga, com "fechado" no cabeçalho
+  const h = horarioDe(r.s), fechado = DIAS.map((_, d) => !janela(h, d));
+  const repete = r.grupos.every((g) => g.sched.weeks.every((wk) => JSON.stringify(wk) === JSON.stringify(g.sched.weeks[0])));
+  const tabs = repete ? '<p class="hint">A escala se repete toda semana.</p>' : nSem <= 6
     ? Array.from({ length: nSem }, (_, i) =>
       `<button type="button" data-act="week" data-sid="${sid}" data-w="${i}" aria-pressed="${i === w}">Semana ${i + 1}</button>`).join('')
     : `<label class="f semsel" for="sem-${sid}">Semana do rodízio
@@ -2132,7 +2347,7 @@ function escalaHTML(r) {
       let horas = 0;
       const cells = grid[e].map((c, d) => {
         if (c === 'T') { horas += g.dias[d].h; return `<td class="t">${hhmm(g.dias[d].a)}–${hhmm(g.dias[d].b)}</td>`; }
-        return c === 'F' ? '<td class="f">Folga</td>' : '<td class="x">—</td>';
+        return '<td class="f">Folga</td>';
       }).join('');
       return `<tr><td class="who">${esc(p.nome)}${p.novo ? '<span class="newtag">contratar</span>' : ''}</td>${cells}<td class="h">${fmtH(horas)}</td><td class="h">${fmtH(g.sched.media[e])}</td>${hasSun ? `<td class="h">${g.R[DOM] ? g.sched.sunOff[e] + ' de ' + g.sched.ciclo : '—'}</td>` : ''}</tr>`;
     }).join('');
@@ -2140,10 +2355,10 @@ function escalaHTML(r) {
   }).join('');
   return `<div class="esc-body">
       <div class="weeks">${tabs}</div>
-      <div class="legend"><span><i class="sw" style="background:var(--primary-soft)"></i>Trabalha (horário)</span><span><i class="sw" style="background:var(--off)"></i>Folga</span><span>— fechado</span></div>
+      <div class="legend"><span><i class="sw" style="background:var(--primary-soft)"></i>Trabalha (horário)</span><span><i class="sw" style="background:var(--off)"></i>Folga</span></div>
       <p class="hint so-cel">Arraste a tabela para o lado para ver a semana toda.</p>
       <div class="scroll" tabindex="0" role="region" aria-label="Escala da semana (role para o lado)"><table class="sched">
-        <thead><tr><th scope="col" class="who">Pessoa</th>${DIAS.map((d) => `<th scope="col">${d}</th>`).join('')}<th scope="col">Horas na semana</th><th scope="col" title="Média de horas por semana no período mostrado">Média</th>${hasSun ? '<th scope="col" title="Domingos de folga no período mostrado">Domingos de folga</th>' : ''}</tr></thead>
+        <thead><tr><th scope="col" class="who">Pessoa</th>${DIAS.map((d, i) => `<th scope="col">${d}${fechado[i] ? '<small>fechado</small>' : ''}</th>`).join('')}<th scope="col">Horas na semana</th><th scope="col" title="Média de horas por semana no período mostrado">Média</th>${hasSun ? '<th scope="col" title="Domingos de folga no período mostrado">Domingos de folga</th>' : ''}</tr></thead>
         <tbody>${body}</tbody>
       </table></div>
     </div>`;
@@ -2184,7 +2399,43 @@ function explicacaoHTML(r, c) {
   });
   linhas.push(`Total: ${plural(r.need, 'pessoa', 'pessoas')}. Hoje: ${r.cur}. ${r.hires ? `Falta contratar ${plural(r.hires, 'pessoa', 'pessoas')}.` : r.sobra ? `A equipe tem ${plural(r.sobra, 'pessoa', 'pessoas')} além do necessário.` : 'A conta fecha.'}`);
   if (r.need6 != null) linhas.push(`Para comparar: na 6x1 de 44h, o mesmo setor precisaria de cerca de ${plural(r.need6, 'pessoa', 'pessoas')} (estimativa pelo total de horas)${r.need6 > r.cur ? ', então a equipe atual já estava abaixo do necessário' : ''}.`);
-  return `<div class="steps"><h4>Como chegamos a esse número</h4><ol>${linhas.map((l) => `<li>${l}</li>`).join('')}</ol></div>`;
+  return `<ol>${linhas.map((l) => `<li>${l}</li>`).join('')}</ol>`;
+}
+
+// Setor sem a equipe de hoje informada: mostra isso em vez de "tem 0"
+const semFuncionarios = (s) => String(s.func ?? '').trim() === '';
+// Resumo da conta em uma olhada: uma linha por turno e o total; a conta por extenso fica num "ver mais"
+function contaSetorHTML(r, c) {
+  const h = horarioDe(r.s);
+  const w = janela(h, DIAS.findIndex((_, d) => janela(h, d)));
+  let ctx = '';
+  if (r.s.turnosModo === 'auto' && w) {
+    const L = lenTurno(r.s, c.H), trab = r.plantao ? 12 * 60 - intervaloMin() : Math.round((r.Hs / 5) * 60);
+    ctx = r.grupos.length > 1
+      ? `Aberto ${fmtH((w.b - w.a) / 60)} por dia → ${r.grupos.length} turnos de ${fmtH(L / 60)} (${fmtH(trab / 60)} de trabalho + ${fmtH((L - trab) / 60)} de intervalo).`
+      : `Um turno só cobre todo o horário (${hhmm(w.a)}–${hhmm(w.b)}).`;
+    if (r.s.jornada && r.s.jornada !== '8') ctx = `Jornada ${nomeJornada(r.s)}. ${ctx}`;
+  }
+  const linhas = r.grupos.map((g) => {
+    const qs = g.A.map((d) => g.R[d]), mn = Math.min(...qs), mx = Math.max(...qs);
+    const fer = (g.needFer ?? g.needBase) - g.needBase, ferias = g.need - (g.needFer ?? g.needBase);
+    const extras = [fer ? `${fer} feriado` : '', ferias ? `${ferias} férias` : ''].filter(Boolean);
+    const pessoas = extras.length ? `${g.needBase} + ${extras.join(' + ')} = <b>${g.need}</b>` : `<b>${g.need}</b>`;
+    return `<tr><th scope="row">${esc(g.nome)}<span class="viab">${hhmm(g.ref.a)}–${hhmm(g.ref.b)}</span></th>
+      <td class="n" data-l="Ao mesmo tempo">${mn === mx ? mx : `${mn} a ${mx}`}</td>
+      <td class="n" data-l="Dias">${r.plantao ? 'dia sim, dia não' : plural(g.A.length, 'dia', 'dias')}</td>
+      <td class="n" data-l="Pessoas">${pessoas}</td></tr>`;
+  }).join('');
+  const semFunc = semFuncionarios(r.s);
+  const saldo = r.hires ? `<b>${r.hires === 1 ? 'falta 1' : `faltam ${r.hires}`}</b>` : r.sobra ? `sobram ${r.sobra}` : 'a conta fecha';
+  return `<div class="bloco-det"><h4>Como chegamos</h4>
+    ${ctx ? `<p>${ctx}</p>` : ''}
+    <div class="scroll"><table class="comp stack alt conta"><caption class="sr">Pessoas por turno em ${esc(r.s.nome || 'o setor')}</caption>
+      <thead><tr><th scope="col">Turno</th><th scope="col">Ao mesmo tempo</th><th scope="col">Dias</th><th scope="col">Pessoas</th></tr></thead>
+      <tbody>${linhas}</tbody></table></div>
+    <p class="total-det">Precisa de <b>${r.need}</b> · ${semFunc ? 'equipe de hoje não informada' : `tem <b>${r.cur}</b> · ${saldo}`}</p>
+    ${r.need6 != null ? `<p class="hint">Na 6x1 de hoje seriam cerca de ${r.need6}${r.need6 > r.cur && !semFunc ? ': a equipe atual já estava abaixo do necessário' : ''}.</p>` : ''}
+    <details class="saiba"><summary>Ver a conta passo a passo</summary>${explicacaoHTML(r, c)}</details></div>`;
 }
 
 function setorResHTML(r, c) {
@@ -2196,20 +2447,20 @@ function setorResHTML(r, c) {
   const badge = r.hires ? `<span class="badge warn">Contratar ${r.hires}</span>`
     : r.sobra ? `<span class="badge info">Equipe com ${r.sobra} a mais</span>` : '<span class="badge ok">Equipe atual cobre</span>';
   const key = 's' + r.s.id;
-  const custo = r.hires
-    ? `<p class="costline">${r.hires} × (${r.salNovo ? brl.format(r.salNovo) : 'salário não informado'} + ${pct1.format(+state.config.encargos || 0)}% de encargos${r.ben ? ' + ' + brl.format(r.ben) + ' de benefícios' : ''}) = <b>${brl.format(r.custo)} por mês</b></p>` : '';
+  const linhaCusto = (rot, valor, conta, antes) => `<div class="custo-l"><p class="costline">${rot}: <b>${brl0.format(valor)}/mês</b>${antes != null ? ` <span class="hint">(antes: ${brl0.format(antes)})</span>` : ''}</p><p class="conta-mini">${conta}</p></div>`;
   const hn = horasNoturnas(r.noiteMin || 0), at = atividade(), vh = brl.format(r.sal / (r.Hs * 5));
-  let noite = '';
-  if (r.noiteDepois > 0.5) noite = at.reduz
-    ? `<p class="costline">Adicional noturno: ${n1.format(hn.reais)}h de relógio por mês entre ${at.faixa} viram ${n1.format(hn.pagas)}h pela hora reduzida. (${n1.format(hn.pagas)}h × ${n1.format(1 + adicNoturno() / 100)} − ${n1.format(hn.reais)}h) × ${vh} por hora + encargos = <b>${brl.format(r.noiteDepois)} por mês</b> (antes: ${brl.format(r.noiteAntes)})</p>`
-    : `<p class="costline">Adicional noturno rural: ${n1.format(hn.reais)}h por mês entre ${at.faixa} × ${vh} por hora × ${pct1.format(adicNoturno())}% + encargos = <b>${brl.format(r.noiteDepois)} por mês</b> (antes: ${brl.format(r.noiteAntes)})</p>`;
-  if (r.ferDepois > 0.5) noite += `<p class="costline">Feriados: ${n1.format(r.feriadoHoras)}h trabalhadas por ano em ${feriadosAno()} feriados × ${multFeriado()} × ${vh} por hora + encargos ÷ 12 = <b>${brl.format(r.ferDepois)} por mês</b> (antes: ${brl.format(r.ferAntes)})</p>`;
+  let custos = r.hires
+    ? linhaCusto(`Custo ${r.hires === 1 ? 'da contratação' : `das ${r.hires} contratações`}`, r.custo, `${r.hires} × (${r.salNovo ? brl.format(r.salNovo) : 'salário não informado'} + ${pct1.format(+state.config.encargos || 0)}% de encargos${r.ben ? ' + ' + brl.format(r.ben) + ' de benefícios' : ''})`) : '';
+  if (r.noiteDepois > 0.5) custos += at.reduz
+    ? linhaCusto('Adicional noturno', r.noiteDepois, `${n1.format(hn.reais)}h de relógio por mês entre ${at.faixa} viram ${n1.format(hn.pagas)}h pela hora reduzida: (${n1.format(hn.pagas)}h × ${n1.format(1 + adicNoturno() / 100)} − ${n1.format(hn.reais)}h) × ${vh} por hora + encargos`, r.noiteAntes)
+    : linhaCusto('Adicional noturno rural', r.noiteDepois, `${n1.format(hn.reais)}h por mês entre ${at.faixa} × ${vh} por hora × ${pct1.format(adicNoturno())}% + encargos`, r.noiteAntes);
+  if (r.ferDepois > 0.5) custos += linhaCusto('Feriados', r.ferDepois, `${n1.format(r.feriadoHoras)}h trabalhadas por ano em ${feriadosAno()} feriados × ${multFeriado()} × ${vh} por hora + encargos ÷ 12`, r.ferAntes);
   return `<article class="res">
     <div class="res-head"><h3>${nome}</h3>${badge}</div>
-    <p>Precisa de <b>${plural(r.need, 'pessoa', 'pessoas')}</b> · tem <b>${r.cur}</b> · ${plural(r.grupos.length, 'turno', 'turnos')}${r.hires && !soEscala() ? ` · custo das contratações: <b>${brl0.format(r.custo)}</b> por mês` : ''}</p>
+    <p>Precisa de <b>${plural(r.need, 'pessoa', 'pessoas')}</b> · ${semFuncionarios(r.s) ? 'equipe de hoje não informada' : `tem <b>${r.cur}</b>`} · ${plural(r.grupos.length, 'turno', 'turnos')}${r.hires && !soEscala() && r.custo > 0.5 ? ` · custo das contratações: <b>${brl0.format(r.custo)}</b> por mês` : ''}</p>
     ${r.avisos.map(avisoHTML).join('')}
     ${maisBtn(key, `Ver detalhes<span class="sr">: ${nome}</span>`)}
-    ${ui.det[key] ? `<div class="detail">${explicacaoHTML(r, c)}${soEscala() ? '' : custo}${soEscala() ? '' : noite}${r.hires && !soEscala() ? altSetorHTML(r, c) : ''}<div><button type="button" class="link" data-act="goTurnos" data-sid="${r.s.id}">Ver exemplo de escala deste setor</button></div></div>` : ''}
+    ${ui.det[key] ? `<div class="detail det-setor">${contaSetorHTML(r, c)}${custos && !soEscala() ? `<div class="bloco-det"><h4>Custo</h4>${custos}</div>` : ''}${r.hires && !soEscala() ? altSetorHTML(r, c) : ''}<div><button type="button" class="link" data-act="goTurnos" data-sid="${r.s.id}">Ver exemplo de escala deste setor</button></div></div>` : ''}
   </article>`;
 }
 
@@ -2259,21 +2510,34 @@ function combinacoesSetor(r, c, he) {
 function combinacoesHTML(r, c, he) {
   const ops = combinacoesSetor(r, c, he);
   if (ops.length < 2) return '';
-  return `<h4>E se combinar contratação com outras formas de cobrir?</h4>
+  return `<div class="bloco-det"><h4>Combinações</h4>
     <div class="scroll"><table class="comp stack alt"><caption class="sr">Combinações para ${esc(r.s.nome || 'o setor')}</caption>
       <thead><tr><th scope="col">Como cobrir</th><th scope="col">Custo por mês</th></tr></thead>
       <tbody>${ops.map((o) => `<tr><th scope="row">${o.titulo}${o.melhor ? ' · <b>menor custo</b>' : ''}${o.nota ? `<span class="viab">Não vale: ${o.nota}.</span>` : ''}</th><td class="n" data-l="Custo por mês">${o.ok ? brl0.format(o.custo) : '—'}</td></tr>`).join('')}</tbody>
     </table></div>
-    <p class="hint">Estimativa simplificada, para conversar com o contador. Hora extra todo dia cansa a equipe e precisa de acordo (CLT, art. 59). O intermitente exige contrato escrito e convocação com 3 dias de antecedência (CLT, art. 452-A), e a pessoa pode recusar. Meio período é contrato de tempo parcial (CLT, art. 58-A). Banco de horas só compensa picos passageiros, não uma falta permanente de gente.</p>`;
+    <details class="saiba"><summary>Saiba mais</summary><p>Estimativa simplificada, para conversar com o contador. Hora extra todo dia cansa a equipe e precisa de acordo (CLT, art. 59). O intermitente exige contrato escrito e convocação com 3 dias de antecedência (CLT, art. 452-A), e a pessoa pode recusar. Meio período é contrato de tempo parcial (CLT, art. 58-A). Banco de horas só compensa picos passageiros, não uma falta permanente de gente.</p></details></div>`;
 }
+// Tabela de ajustes de horário: uma linha por resultado diferente, com o limite de faturamento em coluna
+function tabelaAjustesHTML(uteis, hiresDe, legenda) {
+  const linhas = uteis.map((x) => `<tr><th scope="row">${x.titulo}</th>
+    <td class="n" data-l="Ainda faltam">${hiresDe(x) || 'nenhuma'}</td>
+    <td class="n" data-l="Economia">${brl0.format(x.economia)}/mês</td>
+    <td class="n" data-l="Vale se faturar menos de">${x.viavel ? `${brl0.format(x.viavel.fat)} por dia` : '—'}</td></tr>`).join('');
+  const iguais = uteis.filter((x) => x.iguais.length).map((x) => `${maiusc(x.iguais.join(' ou '))} ${x.iguais.length > 1 ? 'dão' : 'dá'} o mesmo resultado que ${x.curto}.`);
+  return `<div class="scroll"><table class="comp stack alt ajustes"><caption class="sr">${legenda}</caption>
+      <thead><tr><th scope="col">Ajuste</th><th scope="col">Ainda faltam</th><th scope="col">Economia</th><th scope="col">Vale se o período cortado faturar menos de</th></tr></thead>
+      <tbody>${linhas}</tbody></table></div>
+    ${iguais.length ? `<p class="hint">${iguais.join(' ')}</p>` : ''}`;
+}
+const maiusc = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 function altSetorHTML(r, c) {
   const a = alternativasSetor(r, c);
-  const lista = a.uteis.map((x) => `<tr><th scope="row">${x.titulo}<span class="viab">${textoViavel(x)} por dia.</span></th><td class="n" data-l="Contratações no setor">${x.r2.hires ? `ainda ${x.r2.hires === 1 ? 'falta 1' : 'faltam ' + x.r2.hires}` : 'nenhuma'}</td><td class="n" data-l="Economia">${brl0.format(x.economia)}/mês</td></tr>`).join('');
-  return `<div class="steps"><h4>Dá para evitar contratações neste setor?</h4>
-    <p class="custodia">Considerando só a folha de pagamento, cada dia aberto deste setor custa cerca de <b>${brl0.format(a.custoDia)}</b> com a nova jornada.</p>
-    ${lista ? `<div class="scroll"><table class="comp stack alt"><caption class="sr">Alternativas para ${esc(r.s.nome || 'o setor')}</caption><thead><tr><th scope="col">Ajuste só no horário deste setor</th><th scope="col">Contratações no setor</th><th scope="col">Economia</th></tr></thead><tbody>${lista}</tbody></table></div><p class="hint">${notaMargem()}</p>` : '<p>Nenhum ajuste simples de horário reduz as contratações deste setor.</p>'}
-    ${a.he ? `<p class="hint">${heTexto({ contratacoes: r.custo }, a.he)}</p>` : ''}
-    ${combinacoesHTML(r, c, a.he)}</div>`;
+  const saiba = [a.uteis.length ? notaMargem() : '', a.he ? heTexto({ contratacoes: r.custo }, a.he) : ''].filter(Boolean);
+  return `<div class="bloco-det"><h4>Dá para evitar?</h4>
+    <p class="hint">Ajustes só no horário deste setor. Cada dia aberto custa cerca de ${brl0.format(a.custoDia)} de folha.</p>
+    ${a.uteis.length ? tabelaAjustesHTML(a.uteis, (x) => x.r2.hires, `Alternativas para ${esc(r.s.nome || 'o setor')}`) : '<p>Nenhum ajuste simples de horário reduz as contratações deste setor.</p>'}
+    ${saiba.length ? `<details class="saiba"><summary>Saiba mais</summary>${saiba.map((s) => `<p>${s}</p>`).join('')}</details>` : ''}</div>
+    ${combinacoesHTML(r, c, a.he)}`;
 }
 
 function comparativoHTML(c) {
@@ -2358,9 +2622,8 @@ function alternativasSetor(r, c) {
     abertos.forEach((x, i) => abertos.slice(i + 1).forEach((y2) => pares.push([x, y2])));
     alts.push(melhor(pares));
   }
-  const uteis = alts.filter((a) => a && !a.r2.erros.length && a.r2.hires < r.hires)
-    .map((a) => { const economia = r.custo - a.r2.custo; return { ...a, evita: r.hires - a.r2.hires, economia, viavel: limiteViavel(economia, a.ocorr) }; })
-    .sort((x, y2) => y2.economia - x.economia);
+  const uteis = semRepetidos(alts.filter((a) => a && !a.r2.erros.length && a.r2.hires < r.hires)
+    .map((a) => { const economia = r.custo - a.r2.custo; return { ...a, evita: r.hires - a.r2.hires, economia, viavel: limiteViavel(economia, a.ocorr) }; }), (x) => x.r2.hires);
   // Hora extra no lugar das contratações deste setor
   let horas = 0;
   r.grupos.forEach((g) => {
@@ -2446,14 +2709,24 @@ function notaMargem() {
     : 'A economia é quanto a folha nova diminui com o ajuste, principalmente pelas contratações evitadas. Sem a margem de contribuição, o limite considera que todo o faturamento do período sobraria para a empresa, então sai mais baixo que o real. Informe a margem na etapa 3 para um limite mais realista.') + ' É uma conta simplificada: não considera clientes que podem não voltar, custos fixos (aluguel, energia) nem impostos sobre a venda. Revise com seu contador antes de decidir.';
 }
 // Descreve o período que deixa de abrir e quantas vezes por mês isso acontece
+// pref: quanto o ajuste mexe no funcionamento (menor = menos); curto: nome para a nota de resultados iguais
 function periodoAlt(tipo, h, extra) {
   const dm = diasAbertosMes(h);
-  if (tipo === 'cedo') return { ocorr: dm, periodo: `Compensa se a hora das ${moverHora(h.fim, -60)} às ${h.fim} costuma` };
-  if (tipo === 'tarde') return { ocorr: dm, periodo: `Compensa se a hora das ${h.ini} às ${moverHora(h.ini, 60)} costuma` };
-  if (tipo === 'ambos') return { ocorr: dm, periodo: 'Compensa se essas 2 horas, somadas, costumam' };
-  if (tipo === 'turno') return { ocorr: dm, periodo: `Compensa se o período depois das ${extra} costuma` };
+  if (tipo === 'cedo') return { ocorr: dm, pref: 1, curto: 'fechar 1 hora mais cedo', periodo: `Compensa se a hora das ${moverHora(h.fim, -60)} às ${h.fim} costuma` };
+  if (tipo === 'tarde') return { ocorr: dm, pref: 1, curto: 'abrir 1 hora mais tarde', periodo: `Compensa se a hora das ${h.ini} às ${moverHora(h.ini, 60)} costuma` };
+  if (tipo === 'ambos') return { ocorr: dm, pref: 2, curto: 'abrir mais tarde e fechar mais cedo', periodo: 'Compensa se essas 2 horas, somadas, costumam' };
+  if (tipo === 'turno') return { ocorr: dm, pref: 3, curto: 'funcionar só um turno', periodo: `Compensa se o período depois das ${extra} costuma` };
   const nomes = extra.map((d) => DIAS_LONGO[d].toLowerCase());
-  return { ocorr: (extra.length * 52) / 12, periodo: extra.length === 1 ? `Compensa se cada ${nomes[0]} costuma` : `Compensa se cada ${nomes.join(' e cada ')} costumam` };
+  return { ocorr: (extra.length * 52) / 12, pref: 3 + extra.length, curto: extra.length === 1 ? 'fechar um dia' : 'fechar dois dias', periodo: extra.length === 1 ? `Compensa se cada ${nomes[0]} costuma` : `Compensa se cada ${nomes.join(' e cada ')} costumam` };
+}
+// Ajustes com o mesmo resultado (mesmas contratações e economia): fica só o que mexe menos no funcionamento
+function semRepetidos(lista, hiresDe) {
+  const out = [];
+  [...lista].sort((x, y) => x.pref - y.pref).forEach((x) => {
+    const igual = out.find((o) => hiresDe(o) === hiresDe(x) && Math.abs(o.economia - x.economia) < 1);
+    if (igual) igual.iguais.push(x.curto); else out.push({ ...x, iguais: [] });
+  });
+  return out.sort((x, y) => y.economia - x.economia || x.pref - y.pref);
 }
 
 function alternativas(c) {
@@ -2494,9 +2767,8 @@ function alternativas(c) {
     }
   }
   // Compara a folha nova inteira: inclui o adicional noturno que deixa de existir
-  const uteis = alts.filter((a) => a.c2.hires < c.hires && a.c2.folha + a.c2.extra < c.folha + c.extra)
-    .map((a) => { const economia = c.folha + c.extra - a.c2.folha - a.c2.extra; return { ...a, evita: c.hires - a.c2.hires, economia, viavel: limiteViavel(economia, a.ocorr) }; })
-    .sort((x, y) => y.economia - x.economia);
+  const uteis = semRepetidos(alts.filter((a) => a.c2.hires < c.hires && a.c2.folha + a.c2.extra < c.folha + c.extra)
+    .map((a) => { const economia = c.folha + c.extra - a.c2.folha - a.c2.extra; return { ...a, evita: c.hires - a.c2.hires, economia, viavel: limiteViavel(economia, a.ocorr) }; }), (x) => x.c2.hires);
 
   // Cobrir a falta com hora extra em vez de contratar
   let horas = 0, capacidade = 0, custoHE = 0;
@@ -2519,13 +2791,11 @@ function alternativas(c) {
 }
 
 function alternativasHTML(c, a) {
-  const lista = a.uteis.map((x) => `<tr><th scope="row">${x.titulo}<span class="viab">${textoViavel(x)} por dia.</span></th><td class="n" data-l="Contratações">${x.c2.hires ? `ainda ${x.c2.hires === 1 ? 'falta 1' : 'faltam ' + x.c2.hires} na empresa` : 'nenhuma contratação'}</td><td class="n" data-l="Economia">${brl0.format(x.economia)}/mês</td></tr>`).join('');
-  const heTxt = a.he ? `<p>${heTexto(c, a.he)}</p>` : '';
-  return `<p class="custodia">Considerando só a folha de pagamento, cada dia aberto custa cerca de <b>${brl0.format(a.custoDia)}</b> com a nova jornada (folha de ${brl0.format(c.folha + c.extra)} ÷ ${n1.format(diasAbertosMes(state.loja))} dias abertos no mês).</p>
-    ${lista ? `<div class="scroll"><table class="comp stack alt"><caption class="sr">Alternativas à contratação</caption><thead><tr><th scope="col">Ajuste</th><th scope="col">Contratações</th><th scope="col">Economia</th></tr></thead><tbody>${lista}</tbody></table></div>
-    <p class="hint">${notaMargem()}</p>` : '<p>Nenhum ajuste simples de horário reduz as contratações.</p>'}
-    ${heTxt}
-    <p class="hint">Os ajustes valem para os setores que seguem o horário da empresa. Em cada setor que precisa contratar, "Ver detalhes" também mostra alternativas só para aquele setor.</p>`;
+  const saiba = [a.uteis.length ? notaMargem() : '', a.he ? heTexto(c, a.he) : '',
+    `Cada dia aberto custa cerca de ${brl0.format(a.custoDia)}: folha de ${brl0.format(c.folha + c.extra)} ÷ ${n1.format(diasAbertosMes(state.loja))} dias abertos no mês.`,
+    'Os ajustes valem para os setores que seguem o horário da empresa. Em cada setor que precisa contratar, "Ver detalhes" também mostra alternativas só para aquele setor.'].filter(Boolean);
+  return `${a.uteis.length ? tabelaAjustesHTML(a.uteis, (x) => x.c2.hires, 'Alternativas à contratação') : '<p>Nenhum ajuste simples de horário reduz as contratações.</p>'}
+    <details class="saiba"><summary>Saiba mais</summary>${saiba.map((s) => `<p>${s}</p>`).join('')}</details>`;
 }
 
 function renderResults() {
@@ -2535,6 +2805,7 @@ function renderResults() {
   }
 }
 function renderResultsSeguro() {
+  atualizaResumoSetor();
   const c = compute();
   const out = document.getElementById('results');
   renderBenSum(c);
@@ -2567,21 +2838,28 @@ function renderResultsSeguro() {
           : `Quem trabalha no feriado recebe as horas em dobro${multFeriado() === 2 ? ', além do dia já pago no salário' : ' no total'} (Súmula 146 do TST). O custo já entra na folha.`}${mf !== 'fecha' ? ' No comércio, abrir em feriado exige autorização na convenção coletiva e respeito à lei do município (Lei 10.101/2000, art. 6º-A).' : ''} ${mf === 'dobro' ? 'A quantidade de feriados e a forma de calcular o dobro ficam' : 'A quantidade de feriados fica'} nas Configurações avançadas (etapa 3).</p></div>`;
   const so = soEscala();
   const equipeHoje = ok.reduce((a, r) => a + r.cur, 0), precisa = ok.reduce((a, r) => a + r.need, 0);
+  const semCusto = c.semSalario && !(Math.abs(c.extra) > 0.5);
   const tiles = so ? `<div class="tiles">
     <div class="tile ${c.hires ? 'alert' : ''}"><span class="k">Contratações</span><span class="v">${c.hires}</span></div>
     <div class="tile"><span class="k">Pessoas necessárias</span><span class="v">${precisa}</span></div>
     <div class="tile"><span class="k">Equipe hoje</span><span class="v">${equipeHoje}</span></div>
   </div>` : `<div class="tiles">
     <div class="tile ${c.hires ? 'alert' : ''}"><span class="k">Contratações</span><span class="v">${c.hires}</span></div>
-    <div class="tile"><span class="k">${c.extra < 0 ? 'Economia por mês' : 'Custo extra por mês'}</span><span class="v">${brl0.format(Math.abs(c.extra))}</span></div>
+    <div class="tile"><span class="k">${c.extra < 0 ? 'Economia por mês' : 'Custo extra por mês'}</span><span class="v">${semCusto ? '—' : brl0.format(Math.abs(c.extra))}</span></div>
     <div class="tile"><span class="k">Aumento da folha</span><span class="v">${aumento == null ? '—' : (aumento >= 0 ? '+' : '−') + pct1.format(Math.abs(aumento) * 100) + '%'}</span></div>
   </div>`;
   let msg = '';
   if (ok.length && !c.hires) msg = `<div class="msg ok">Não precisa contratar: reorganizando turnos e folgas, a equipe atual dá conta.</div>`;
   else if (c.hires) msg = `<div class="msg info">Mesmo reorganizando turnos e folgas, ${c.hires === 1 ? 'falta' : 'faltam'} <b>${plural(c.hires, 'pessoa', 'pessoas')}</b> para cobrir o horário com 2 folgas por semana.</div>`;
-  if (c.semSalario && !so) msg += '<div class="msg warn">Falta o salário médio de algum setor que precisa contratar, então o custo extra mostrado fica abaixo do real. Informe o salário na etapa 2.</div>';
+  // No modo rápido, o "ao mesmo tempo" estimado decide o resultado: fica à vista, com atalho para corrigir
+  const s0 = state.setores[0];
+  if (modo === 'rapido' && ok.length === 1 && filled.length === 1 && s0 && !s0.minimoManual && +s0.func > 0 && +s0.minimo > 0)
+    msg += `<p class="estimado">Conta feita com <b>${plural(+s0.minimo, 'pessoa', 'pessoas')} ao mesmo tempo</b>, estimado pela sua equipe de hoje. <button type="button" class="link" data-act="corrigeMin">Corrigir</button></p>`;
+  if (c.semSalario && !so) msg += modo === 'rapido'
+    ? '<div class="msg warn">Para ver quanto as contratações custam, informe o custo por funcionário. <button type="button" class="link" data-act="corrigeMin" data-campo="rq-custo">Informar</button></div>'
+    : '<div class="msg warn">Falta o salário médio de algum setor que precisa contratar, então o custo extra mostrado fica abaixo do real. Informe o salário na etapa 2.</div>';
   const semFeriado = !['fecha', 'folga', 'dobro'].includes(state.config.feriadoModo);
-  if (semFeriado) msg += '<div class="msg warn">Você não informou se a empresa abre em feriados (etapa 1). Por enquanto, o cálculo considera que fecha.</div>';
+  if (semFeriado && modo !== 'rapido') msg += '<div class="msg warn">Você não informou se a empresa abre em feriados (etapa 1). Por enquanto, o cálculo considera que fecha.</div>';
   const txtFer = semFeriado ? 'não informado' : { fecha: 'empresa fecha', folga: 'abre com folga extra', dobro: 'abre e paga em dobro' }[mf];
   const premissas = `<section class="prem" aria-label="O que o cálculo considera">
     <div class="prem-line"><p><b>O cálculo considera:</b> férias ${fer ? 'com cobertura (30 dias por pessoa por ano)' : 'sem cobertura (o número de contratações sai menor que o real)'} · feriados: ${txtFer} (${feriadosAno()} por ano)</p>
@@ -2608,9 +2886,8 @@ function renderResultsSeguro() {
   if (ok.length) secoes += `<section class="sec" id="sec-comp"><div class="sec-head"><h3>Compartilhar com o contador</h3></div>${compartilharHTML()}</section>`;
   if (ok.length && !so) secoes += `<section class="sec" id="sec-cen"><div class="sec-head"><h3>Comparar cenários</h3></div>${cenariosHTML(c)}</section>`;
   const mais = secoes ? `<section class="sec mais"><div class="sec-head"><h3>Mais análises</h3></div>
-    <p class="hint">${so ? 'Compartilhar com o contador.' : 'Linha do tempo, antes e depois, alternativas à contratação, compartilhar e comparar cenários.'}</p>
-    ${maisBtn('mais', 'Ver mais análises')}${ui.det.mais ? `<div class="detail mais-det">${secoes}</div>` : ''}</section>` : '';
-  out.innerHTML = tiles + msg + premissas + (ok.length ? '<p class="hint">Próximo passo: <button type="button" class="link" data-act="pdf">salve o resultado em PDF</button> e mostre ao seu contador.</p>' : '') + `<div class="sec-head" id="sec-setores"><h3>Por setor</h3></div>` + filled.map((r) => setorResHTML(r, c)).join('') + mais;
+    ${maisBtn('mais', so ? 'Compartilhar com o contador' : 'Ver linha do tempo, alternativas e cenários')}${ui.det.mais ? `<div class="detail mais-det">${secoes}</div>` : ''}</section>` : '';
+  out.innerHTML = tiles + msg + premissas + '' + `<div class="sec-head" id="sec-setores"><h3>Por setor</h3></div>` + filled.map((r) => setorResHTML(r, c)).join('') + mais;
   renderTurnos(c);
 }
 
@@ -2648,7 +2925,7 @@ function opcoesEscalaHTML(ok) {
   const altaHTML = `<div class="opt"><span class="opt-t" id="opt-alta">Dias de alta demanda</span>
       <div class="dias dias-alta" role="group" aria-labelledby="opt-alta">${DIAS.map((d, i) => abertos[i]
         ? `<button type="button" class="dia" data-act="alta" data-i="${i}" aria-pressed="${alta[i]}" aria-label="${DIAS_LONGO[i]}">${d}</button>` : '').join('')}</div></div>
-    <p class="hint">Marque os dias mais movimentados, como sexta ou sábado: a escala dá o menor número possível de folgas neles, para ter mais gente trabalhando sem contratar.${alta[DOM] ? ' Com o domingo marcado, a folga no domingo deixa de ser priorizada; confira a regra de folga no domingo da sua categoria.' : ''}</p>`;
+    <p class="hint">Dias marcados recebem o menor número de folgas.${alta[DOM] ? ' Com o domingo marcado, a folga no domingo deixa de ser priorizada; confira a regra de folga no domingo da sua categoria.' : ''}</p>`;
   return `<div class="opts">
     ${mostraEq ? grupo('Horas entre a equipe', 'equilibrar', eq, 'Equilibrar horas', 'Não equilibrar') : ''}
     ${mostraSeg ? grupo('Folgas', 'seguidas', seg, 'Preferir dias seguidos', 'Não preferir') : ''}
@@ -2665,7 +2942,7 @@ function renderTurnos(c) {
   const r = ok.find((x) => x.s.id === ui.setorEx);
   const abas = ok.length > 1 ? `<div class="weeks setor-tabs" role="group" aria-label="Setor">${ok.map((x) =>
     `<button type="button" data-act="setorEx" data-sid="${x.s.id}" aria-pressed="${x.s.id === r.s.id}">${esc(x.s.nome || 'Setor sem nome')}</button>`).join('')}</div>` : '';
-  el.innerHTML = `<div class="msg warn"><b>É só um exemplo, não uma recomendação.</b> ${r.plantao ? 'Mostra plantões de 12h em dias alternados (12x36): cada pessoa trabalha 12h e descansa 36h, alternando semanas de 4 e de 3 plantões. A coluna Média mostra as horas trabalhadas por semana, já sem o intervalo.' : `Mostra uma forma de distribuir turnos e folgas que cumpre a jornada de ${nomeJornada(r.s)} e as 2 folgas por semana, com uma delas no domingo sempre que possível, em rodízio.`} Ajuste conforme a rotina da empresa, as preferências da equipe e a convenção coletiva. A escala é montada automaticamente, por um método aproximado: segue as regras principais, mas pode não ser a melhor distribuição para a sua equipe. No comércio, confira se cada pessoa folga no domingo pelo menos 1 vez a cada 3 semanas.${state.config.ferias ? ' Mostra semanas sem ninguém de férias; as pessoas a mais cobrem as férias ao longo do ano.' : ''}</div>
+  el.innerHTML = `<div class="msg warn"><b>Exemplo, não recomendação.</b> Montado automaticamente; ajuste à rotina da equipe. <details class="saiba-in"><summary>Saiba mais</summary>${r.plantao ? 'Mostra plantões de 12h em dias alternados (12x36): cada pessoa trabalha 12h e descansa 36h, alternando semanas de 4 e de 3 plantões. A coluna Média mostra as horas trabalhadas por semana, já sem o intervalo.' : `Mostra uma forma de distribuir turnos e folgas que cumpre a jornada de ${nomeJornada(r.s)} e as 2 folgas por semana, com uma delas no domingo sempre que possível, em rodízio.`} Ajuste conforme a rotina da empresa, as preferências da equipe e a convenção coletiva. A escala é montada automaticamente, por um método aproximado: segue as regras principais, mas pode não ser a melhor distribuição para a sua equipe. No comércio, confira se cada pessoa folga no domingo pelo menos 1 vez a cada 3 semanas.${state.config.ferias ? ' Mostra semanas sem ninguém de férias; as pessoas a mais cobrem as férias ao longo do ano.' : ''}</details></div>
     ${abas}
     <h3>${esc(r.s.nome || 'Setor sem nome')}${r.hires ? ` <span class="badge warn">inclui ${plural(r.hires, 'contratação', 'contratações')}</span>` : ''}</h3>
     ${escalaHTML(r)}
@@ -2841,6 +3118,7 @@ c.res.filter((r) => !r.vazio).forEach((r) => {
     linha(r.plantao ? 'É só um exemplo de 12x36 (plantões de 12h em dias alternados), montado por método aproximado, não uma recomendação. Ajuste conforme a rotina e a convenção coletiva.' : 'É só um exemplo, não uma recomendação. Dá 2 folgas por semana, uma no domingo sempre que possível, mas foi montado automaticamente e pode não atender a todas as regras da sua atividade (no comércio, a folga precisa cair no domingo pelo menos 1 vez a cada 3 semanas). Ajuste conforme a rotina, as preferências da equipe e a convenção coletiva.', 9, cinza, false, 4);
     const ciclo = Math.max(...r.grupos.map((g) => g.sched.ciclo));
     const nSem = Math.min(ciclo, 4);
+    const hr = horarioDe(r.s), fechado = DIAS.map((_, d) => !janela(hr, d));
     if (ciclo > nSem) linha(`O rodízio completo tem ${ciclo} semanas. Aqui aparecem as ${nSem} primeiras; a planilha em Excel traz todas.`, 9, cinza, false, 4);
     for (let w = 0; w < nSem; w++) {
       const body = [];
@@ -2850,7 +3128,7 @@ c.res.filter((r) => !r.vazio).forEach((r) => {
           let horas = 0;
           const cells = g.sched.weeks[w % g.sched.ciclo][e].map((cc, d) => {
             if (cc === 'T') { horas += g.dias[d].h; return `${hhmm(g.dias[d].a)}–${hhmm(g.dias[d].b)}`; }
-            return cc === 'F' ? 'Folga' : '—';
+            return 'Folga';
           });
           body.push([p.nome + (p.novo ? ' (contratar)' : ''), ...cells, fmtH(horas), fmtH(g.sched.media[e])]);
         });
@@ -2858,7 +3136,7 @@ c.res.filter((r) => !r.vazio).forEach((r) => {
       if (y > doc.internal.pageSize.getHeight() - 140) { doc.addPage(); y = M; }
       doc.autoTable({
         startY: y + 4, margin: { left: M, right: M }, theme: 'grid',
-        head: [[`Semana ${w + 1}`, ...DIAS, 'Horas', 'Média']],
+        head: [[`Semana ${w + 1}`, ...DIAS.map((d, i) => (fechado[i] ? `${d}\n(fechado)` : d)), 'Horas', 'Média']],
         body, headStyles: { fillColor: escuro, fontSize: 8 }, styles: { fontSize: 8, cellPadding: 3, halign: 'center' },
         columnStyles: { 0: { halign: 'left', cellWidth: 120 } },
         didParseCell: (d) => { if (d.section === 'body' && d.cell.raw === 'Folga') { d.cell.styles.fillColor = [255, 245, 194]; d.cell.styles.fontStyle = 'bold'; } }
@@ -2956,7 +3234,8 @@ function montarExcel(c) {
   const usados = new Set(['Resumo']);
   ok.forEach((r) => {
     const nSem = Math.max(...r.grupos.map((g) => g.sched.ciclo));
-    const linhas = [['Semana', 'Turno', 'Pessoa', ...DIAS_LONGO, 'Horas na semana', 'Média por semana', 'Domingos de folga']];
+    const hr = horarioDe(r.s), fechado = DIAS.map((_, d) => !janela(hr, d));
+    const linhas = [['Semana', 'Turno', 'Pessoa', ...DIAS_LONGO.map((d, i) => (fechado[i] ? `${d} (fechado)` : d)), 'Horas na semana', 'Média por semana', 'Domingos de folga']];
     for (let w = 0; w < nSem; w++) {
       r.grupos.forEach((g) => {
         const grid = g.sched.weeks[w % g.sched.ciclo];
@@ -2964,7 +3243,7 @@ function montarExcel(c) {
           let horas = 0;
           const cells = grid[e].map((cc, d) => {
             if (cc === 'T') { horas += g.dias[d].h; return `${hhmm(g.dias[d].a)}–${hhmm(g.dias[d].b)}`; }
-            return cc === 'F' ? 'Folga' : 'Fechado';
+            return 'Folga';
           });
           linhas.push([w + 1, `${g.nome} (${hhmm(g.ref.a)}–${hhmm(g.ref.b)})`, p.nome + (p.novo ? ' (contratar)' : ''), ...cells,
             fmtH(horas), fmtH(g.sched.media[e]), g.R[DOM] ? `${g.sched.sunOff[e]} de ${g.sched.ciclo}` : '—']);

@@ -22,11 +22,14 @@ Você informa os dias e o horário de funcionamento e os setores da empresa. O s
 
 ## Como usar
 
-1. **Escolha um modelo** ("Qual é o seu negócio?"): padaria, mercadinho, supermercado, restaurante, loja de rua ou de shopping, farmácia, salão, oficina, posto ou hotel/portaria 24h. O modelo preenche horários, setores e salários típicos, e o resultado aparece na hora. Também dá para começar do zero.
-2. **Confira os funcionários** de cada setor. O modelo estima a equipe de hoje; corrija com o número real.
-3. **Veja o resultado.** Dias, horário, feriados e custos ficam resumidos numa linha, com "Ajustar" para mudar. As análises extras (linha do tempo, alternativas, cenários, compartilhar) ficam em "Mais análises".
+No topo há dois modos, **Rápido** e **Detalhado**. Os dados são os mesmos nos dois, então dá para começar no rápido e refinar no detalhado.
 
-Quem quiser controle total usa "Ver todas as opções", com a página completa ou o passo a passo.
+**Rápido** (padrão): três perguntas e o resultado na hora.
+1. **Dias:** Seg a Sex, Seg a Sáb, Todos os dias, Ter a Sáb ou outros.
+2. **Horário:** 08h às 18h, 08h às 22h, 24 horas ou outro.
+3. **Equipe:** funcionários de hoje, quantos trabalham ao mesmo tempo (estimado a partir da equipe; dá para corrigir) e, se quiser o custo, o custo médio por funcionário (salário + encargos + benefícios).
+
+**Detalhado:** vários setores, turnos, pessoas por dia, feriados, encargos e benefícios, numa página só ou uma etapa por vez.
 
 ### O que calcular
 
@@ -88,7 +91,7 @@ npm install
 npm test
 ```
 
-São 24 testes, que devem passar antes de qualquer publicação:
+São 29 testes, que devem passar antes de qualquer publicação:
 
 - **Cálculo** (`tests/calculo.test.js`): casos com valores conferidos, todos os modelos prontos, dados salvos corrompidos, aviso de domingo no comércio e 400 simulações aleatórias. Cada simulação verifica cobertura mínima, dias e horas por pessoa, 12x36, ausência de NaN, PDF e Excel.
 - **Tela** (`tests/tela.test.js`): fluxo no Chromium (celular e computador), modo rápido com modelo pronto, modo "Só a escala", cenários, compartilhamento, passo a passo, teclado, acessibilidade (axe-core) e download de PDF e Excel.

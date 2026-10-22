@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
-const os = require('os');
+const http = require('http');
 const path = require('path');
 const { chromium } = require('playwright');
 const { HTML } = require('./app');
@@ -13,13 +13,20 @@ const executavel = process.env.CHROMIUM_PATH || (fs.existsSync(PADRAO) ? PADRAO 
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const TELAS = { celular: { width: 390, height: 800, mob: true }, computador: { width: 1280, height: 900, mob: false } };
 
-// A página publicada recebe o esqueleto de documento na publicação; aqui ele é montado igual
-const pagina = path.join(os.tmpdir(), 'escala5x2-teste.html');
-fs.writeFileSync(pagina, `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>${fs.readFileSync(HTML, 'utf8')}</body></html>`);
-
-let navegador;
-test.before(async () => { navegador = await chromium.launch({ executablePath: executavel }); });
-test.after(async () => { await navegador?.close(); });
+// A página publicada recebe o esqueleto de documento na publicação; aqui ele é montado igual.
+// Servida por HTTP local: com file:// o Chromium às vezes não compartilha o localStorage entre abas e recargas
+const PAGINA = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>${fs.readFileSync(HTML, 'utf8')}</body></html>`;
+const servidor = http.createServer((req, res) => {
+  if (req.url !== '/') { res.writeHead(404); res.end(); return; }
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); res.end(PAGINA);
+});
+let navegador, pagina;
+test.before(async () => {
+  await new Promise((ok) => servidor.listen(0, '127.0.0.1', ok));
+  pagina = `http://127.0.0.1:${servidor.address().port}/`;
+  navegador = await chromium.launch({ executablePath: executavel });
+});
+test.after(async () => { await navegador?.close(); servidor.close(); });
 
 async function abrir(tela, { modo = 'completo', contexto } = {}) {
   const t = TELAS[tela];
@@ -28,7 +35,7 @@ async function abrir(tela, { modo = 'completo', contexto } = {}) {
   const erros = [];
   p.on('pageerror', (e) => erros.push(e.message));
   await p.addInitScript((m) => { if (!localStorage.getItem('escala5x2:modo')) localStorage.setItem('escala5x2:modo', m); localStorage.setItem('escala5x2:aviso', '1'); }, modo);
-  await p.goto('file://' + pagina);
+  await p.goto(pagina);
   return { p, ctx, erros };
 }
 // Abre "Mais análises" no resultado (linha do tempo, cenários, compartilhar)
@@ -82,7 +89,7 @@ for (const tela of Object.keys(TELAS)) {
     await p.click('#advBtn');
     await p.click('[data-act="det"][data-k="prem"]');
     await p.click(`[data-act="det"][data-k="s${sid}"]`);
-    await p.$$eval('footer details', (ds) => ds.forEach((d) => { d.open = true; }));
+    await p.$$eval('footer details, #results .detail details', (ds) => ds.forEach((d) => { d.open = true; }));
     assert.deepEqual(await audita(), [], 'página preenchida');
     await p.click('#btnContraste');
     assert.deepEqual(await audita(), [], 'alto contraste');
@@ -136,13 +143,15 @@ test('teclado: o elemento com foco nunca fica escondido sob a barra ou o topo fi
   const escondidos = new Set();
   for (let i = 0; i < 120; i++) {
     await p.keyboard.press('Tab');
+    // Mede depois que a rolagem e o layout assentam (sob carga, a medida imediata pega o meio do caminho)
+    await p.evaluate(() => new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok))));
     const x = await p.evaluate(() => {
       const e = document.activeElement;
       if (!e || e === document.body || e.closest('.topbar, .a11y, #bar')) return null;
       const r = e.getBoundingClientRect(), bar = document.getElementById('bar'), topo = document.querySelector('.topbar').getBoundingClientRect();
       const sobBarra = !bar.hidden && r.bottom > bar.getBoundingClientRect().top + 1;
       const sobTopo = r.top < topo.bottom - 1;
-      return sobBarra || sobTopo ? (e.id || e.dataset.act || e.tagName) : '';
+      return sobBarra || sobTopo ? (e.id || e.dataset.act || `${e.tagName} "${e.textContent.trim().slice(0, 40)}"`) : '';
     });
     if (x) escondidos.add(x);
   }
@@ -211,7 +220,7 @@ test('compartilhar: o link leva a mesma simulação para outra pessoa', async ()
   // Pelo campo "Recebeu um código?"
   const r = await outro.newPage();
   await r.addInitScript(() => { localStorage.setItem('escala5x2:modo', 'completo'); localStorage.setItem('escala5x2:aviso', '1'); });
-  await r.goto('file://' + pagina);
+  await r.goto(pagina);
   await r.click(".recebido summary");
   await r.fill('#codigoAbrir', link.split('#s=')[1]);
   await r.click('[data-act="abrirCodigo"]');
@@ -222,7 +231,7 @@ test('compartilhar: o link leva a mesma simulação para outra pessoa', async ()
 test('primeira visita: aviso com não oficial, dados locais e contato; não volta depois', async () => {
   const ctx = await navegador.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
   const p = await ctx.newPage();
-  await p.goto('file://' + pagina);
+  await p.goto(pagina);
   assert.equal(await p.$eval('#boasVindas', (d) => d.open), true);
   const txt = await p.$eval('#boasVindas', (d) => d.textContent);
   for (const t of ['não oficial', 'Nada é enviado para servidores', 'cerionegiovanne@gmail.com']) assert.ok(txt.includes(t), t);
@@ -235,7 +244,7 @@ test('primeira visita: aviso com não oficial, dados locais e contato; não volt
 
 test('só a escala: sem salário, sem valores em reais no resultado', async () => {
   const { p, ctx, erros } = await abrir('computador');
-  await p.click('[data-act="soEscala"][data-v="sim"]');
+  await p.click('#modoCalc [data-act="soEscala"][data-v="sim"]');
   for (const i of [0, 1, 2, 3, 4, 5, 6]) await p.click(`#loja [data-act="dia"][data-i="${i}"]`);
   await p.fill('#loja-ini', '08:00'); await p.fill('#loja-fim', '20:00');
   const sid = await p.$eval('.setor input[data-p="nome"]', (e) => e.dataset.s);
@@ -250,23 +259,90 @@ test('só a escala: sem salário, sem valores em reais no resultado', async () =
   await ctx.close();
 });
 
-test('modo rápido: um modelo pronto mostra o resultado em um clique', async () => {
+test('detalhe do setor: resumo por turno e a conta completa num clique', async () => {
+  const { p, ctx, erros } = await abrir('celular');
+  const sid = await preencher(p, { fim: '22:00', func: '3', minimo: '3' });
+  await p.click(`[data-act="det"][data-k="s${sid}"]`);
+  const det = '#results .det-setor';
+  assert.equal(await p.$$eval(`${det} table.conta tbody tr`, (t) => t.length), 2, 'uma linha por turno');
+  assert.match(await p.$eval(`${det} .total-det`, (e) => e.innerText), /Precisa de \d+ · tem 3 · faltam \d+/);
+  const conta = `${det} details.saiba:has(> summary:text("Ver a conta passo a passo"))`;
+  assert.equal(await p.isVisible(`${conta} ol`), false, 'a conta por extenso começa fechada');
+  await p.click(`${conta} > summary`);
+  assert.match(await p.$eval(`${conta} ol`, (e) => e.innerText), /dias de trabalho a cobrir por semana.*÷/s);
+  assert.equal(await rolagemLateral(p), 0);
+  assert.deepEqual(erros, []);
+  await ctx.close();
+});
+
+test('escala: dia fechado aparece como folga; semanas iguais não viram abas', async () => {
+  const { p, ctx, erros } = await abrir('computador', { modo: 'rapido' });
+  await p.click('[data-act="rqDias"][data-k="segsex"]');
+  await p.click('[data-act="rqHora"][data-k="h0818"]');
+  await p.fill('#rq-func', '3');
+  await p.waitForSelector('#turnos table.sched');
+  // Sem custo informado: nada de "R$ 0" e o aviso aponta o campo da própria caixa
+  assert.equal(await p.$eval('#results .tile:nth-child(2) .v', (e) => e.textContent), '—');
+  await p.click('#results [data-act="corrigeMin"][data-campo="rq-custo"]');
+  assert.equal(await p.evaluate(() => document.activeElement.id), 'rq-custo');
+  const linhas = await p.$$eval('#turnos table.sched tbody tr:not(.grp)', (trs) => trs.map((tr) =>
+    [tr.querySelectorAll('td.t').length, tr.querySelectorAll('td.f').length, tr.querySelectorAll('td.x').length]));
+  assert.ok(linhas.length > 0);
+  for (const l of linhas) assert.deepEqual(l, [5, 2, 0], 'seg a sex trabalhando, sáb e dom de folga');
+  assert.deepEqual(await p.$$eval('#turnos table.sched td.f', (tds) => [...new Set(tds.map((e) => e.innerText.trim()))]), ['Folga'], 'célula diz só "Folga"');
+  assert.deepEqual(await p.$$eval('#turnos table.sched thead th small', (ths) => ths.map((e) => e.parentElement.firstChild.textContent)), ['Sáb', 'Dom'], '"fechado" só no cabeçalho');
+  assert.match(await p.$eval('#turnos .weeks', (e) => e.innerText), /se repete toda semana/);
+  assert.equal(await p.$('#turnos [data-act="week"]'), null, 'sem abas de semanas iguais');
+  assert.deepEqual(erros, []);
+  await ctx.close();
+});
+
+test('modo rápido: dias, horário e funcionários prontos dão o resultado', async () => {
   const ctx = await navegador.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
   const p = await ctx.newPage();
   const erros = []; p.on('pageerror', (e) => erros.push(e.message));
   await p.addInitScript(() => localStorage.setItem('escala5x2:aviso', '1'));
-  await p.goto('file://' + pagina);
+  await p.goto(pagina);
   assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), true, 'modo rápido é o padrão');
-  await p.click('[data-act="modelo"][data-k="padaria"]');
+  await p.click('[data-act="rqDias"][data-k="segdom"]');
+  await p.click('[data-act="rqHora"][data-k="h0822"]');
+  await p.fill('#rq-func', '8');
+  await p.fill('#rq-custo', '2600');
+  const sal = await p.evaluate(() => state.setores[0].salario);
+  assert.ok(sal > 1800 && sal < 2200, `custo de R$ 2.600 vira salário perto de R$ 2.000 no Simples (veio ${sal})`);
   await p.waitForSelector('#results .tile');
+  const s = await p.evaluate(() => ({ nome: state.setores[0].nome, minimo: state.setores[0].minimo, dias: state.loja.dias.filter(Boolean).length, ini: state.loja.ini }));
+  assert.deepEqual([s.nome, s.dias, s.ini], ['Equipe', 7, '08:00']);
+  assert.ok(s.minimo >= 1, 'pessoas ao mesmo tempo deduzidas da equipe');
+  assert.match(await p.$eval('#rqInfer', (e) => e.textContent), /Estimamos pela sua equipe/);
+  assert.equal(await p.$eval('#rq-min', (e) => e.value), String(s.minimo));
   assert.match(await p.$eval('#results', (e) => e.innerText), /Contratações/);
-  assert.equal(await p.isVisible('#loja'), false, 'dias e horário recolhidos');
-  assert.ok(await p.$('input.conferir'), 'funcionários destacados para conferir');
+  assert.equal(await p.isVisible('#loja'), false, 'dias e horário detalhados ficam recolhidos');
+  // O número estimado aparece no resultado e "Corrigir" leva ao campo
+  assert.match(await p.$eval('#results .estimado', (e) => e.innerText), new RegExp(`${s.minimo} pessoas? ao mesmo tempo`));
+  await p.click('#results [data-act="corrigeMin"]');
+  assert.equal(await p.evaluate(() => document.activeElement.id), 'rq-min');
   assert.equal(await rolagemLateral(p), 0);
-  await p.click('[data-act="bloco"][data-k="func"]');
-  assert.equal(await p.isVisible('#loja'), true, '"Ajustar" abre dias e horário');
-  await p.click('#modoBtn');
-  assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), false, '"Ver todas as opções" sai do modo rápido');
+  // Corrigir "ao mesmo tempo" na própria caixa fixa o número; "Usar a estimativa" volta ao cálculo
+  await p.fill('#rq-min', '3');
+  await p.fill('#rq-func', '9');
+  assert.equal(await p.evaluate(() => state.setores[0].minimo), 3, 'número informado à mão não é sobrescrito');
+  assert.equal(await p.$('#results .estimado'), null, 'número informado à mão não aparece como estimado');
+  await p.click('[data-act="rqEstimar"]');
+  assert.notEqual(await p.evaluate(() => state.setores[0].minimoManual), true);
+  // Outro horário e outros dias são editados na própria caixa
+  await p.click('[data-act="rqOutro"][data-k="hora"]');
+  await p.fill('#rq-ini', '07:00'); await p.fill('#rq-fim', '19:00');
+  await p.click('[data-act="rqOutro"][data-k="dias"]');
+  await p.click('[data-act="rqDia"][data-i="6"]');
+  assert.deepEqual(await p.evaluate(() => [state.loja.ini, state.loja.fim, state.loja.dias[6]]), ['07:00', '19:00', false]);
+  // Rápido ⇄ Detalhado mantém os dados
+  await p.click('#modoDet');
+  assert.equal(await p.evaluate(() => document.body.classList.contains('rapido')), false);
+  assert.equal(await p.isVisible(`#${await p.evaluate(() => state.setores[0].id)}-q`), true, 'setores visíveis no detalhado');
+  await p.click('#modoRapido');
+  assert.equal(await p.$eval('#rq-func', (e) => e.value), '9');
   assert.deepEqual(erros, []);
   await ctx.close();
 });
+
