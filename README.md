@@ -20,14 +20,20 @@ Você informa os dias e o horário de funcionamento e os setores da empresa. O s
 - **Como evitar contratações:** mudar o horário, fechar um dia, hora extra, intermitente ou meio período, com o faturamento a partir do qual cada opção compensa.
 - **Como fica a escala:** um exemplo de escala de turnos e folgas por pessoa, que pode ser salvo em Excel.
 
-## Dois modos de uso
+## Como usar
 
-| Modo | Para quem | O que pede | O que mostra |
-|---|---|---|---|
-| **Escala e custos** (padrão) | Quem precisa do orçamento da mudança | Funcionários, salários, encargos e benefícios | Contratações, custo por mês, alternativas, linha do tempo |
-| **Só a escala** | Quem só quer saber se precisa de mais gente | Funcionários e pessoas por vez (sem salários) | Pessoas necessárias, quantas faltam e o exemplo de escala, sem valores em reais |
+1. **Escolha um modelo** ("Qual é o seu negócio?"): padaria, mercadinho, supermercado, restaurante, loja de rua ou de shopping, farmácia, salão, oficina, posto ou hotel/portaria 24h. O modelo preenche horários, setores e salários típicos, e o resultado aparece na hora. Também dá para começar do zero.
+2. **Confira os funcionários** de cada setor. O modelo estima a equipe de hoje; corrija com o número real.
+3. **Veja o resultado.** Dias, horário, feriados e custos ficam resumidos numa linha, com "Ajustar" para mudar. As análises extras (linha do tempo, alternativas, cenários, compartilhar) ficam em "Mais análises".
 
-O modo é escolhido na etapa 1 ("O que você quer saber?") e pode ser trocado a qualquer momento.
+Quem quiser controle total usa "Ver todas as opções", com a página completa ou o passo a passo.
+
+### O que calcular
+
+| Opção | O que pede | O que mostra |
+|---|---|---|
+| **Escala e custos** (padrão) | Funcionários e salários (o modelo já sugere) | Contratações, custo por mês, alternativas, linha do tempo |
+| **Só a escala** | Só funcionários e quantos trabalham ao mesmo tempo | Pessoas necessárias, quantas faltam e o exemplo de escala, sem valores em reais (também no PDF e no Excel) |
 
 ## Privacidade
 
@@ -82,10 +88,10 @@ npm install
 npm test
 ```
 
-São 22 testes, que devem passar antes de qualquer publicação:
+São 24 testes, que devem passar antes de qualquer publicação:
 
-- **Cálculo** (`tests/calculo.test.js`): casos com valores conferidos, dados salvos corrompidos, aviso de domingo no comércio e 400 simulações aleatórias. Cada simulação verifica cobertura mínima, dias e horas por pessoa, 12x36, ausência de NaN, PDF e Excel.
-- **Tela** (`tests/tela.test.js`): fluxo no Chromium (celular e computador), modo "Só a escala", cenários, compartilhamento, passo a passo, teclado, acessibilidade (axe-core) e download de PDF e Excel.
+- **Cálculo** (`tests/calculo.test.js`): casos com valores conferidos, todos os modelos prontos, dados salvos corrompidos, aviso de domingo no comércio e 400 simulações aleatórias. Cada simulação verifica cobertura mínima, dias e horas por pessoa, 12x36, ausência de NaN, PDF e Excel.
+- **Tela** (`tests/tela.test.js`): fluxo no Chromium (celular e computador), modo rápido com modelo pronto, modo "Só a escala", cenários, compartilhamento, passo a passo, teclado, acessibilidade (axe-core) e download de PDF e Excel.
 
 Se o Chromium não for encontrado, informe o caminho em `CHROMIUM_PATH`.
 
@@ -95,7 +101,7 @@ Se o Chromium não for encontrado, informe o caminho em `CHROMIUM_PATH`.
 node simulacao/mil-empresas.js
 ```
 
-Gera 1.000 empresas típicas (padaria, mercado, restaurante, lojas, farmácia, oficina, posto, hotel) e mede quantas precisariam contratar, quanto pagariam e quantas fechariam um dia. É uma ordem de grandeza, não uma pesquisa: as proporções não vêm de dados oficiais.
+Gera 1.000 empresas típicas a partir dos mesmos modelos prontos do site e mede quantas precisariam contratar, quanto pagariam e quantas fechariam um dia. É uma ordem de grandeza, não uma pesquisa: as proporções não vêm de dados oficiais.
 
 ## Licença
 
